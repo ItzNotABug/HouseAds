@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">HouseAds!</string>
+    <string name="serif">serif</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="header_image">Header Image</string>
+    <string name="price_free">Price: Free</string>
+    <string name="interstitial_image">Interstitial Image</string>
+    <string name="close_button">Close Button</string>
+</resources>
