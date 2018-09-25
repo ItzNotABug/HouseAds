@@ -54,6 +54,7 @@ public class HouseAdsDialog {
     private static boolean isAdLoaded = false;
 
     private AdListener mAdListener;
+    private AlertDialog dialog;
 
     private int lastLoaded = 0;
 
@@ -87,16 +88,20 @@ public class HouseAdsDialog {
         else {
             if (jsonRawResponse.equals("")) new ScanUrlTask(jsonUrl).execute();
             else {
-                if (!forceLoadFresh) showAd();
+                if (!forceLoadFresh) setUp(jsonRawResponse);
                 else new ScanUrlTask(jsonUrl).execute();
             }
         }
     }
 
     public void showAd() {
+        dialog.show();
+    }
+
+    private void setUp(String response) {
         ArrayList<DialogModal> val = new ArrayList<>();
 
-        String x = new String(new StringBuilder().append(jsonRawResponse));
+        String x = new String(new StringBuilder().append(response));
 
         try {
             JSONObject rootObject = new JSONObject(x);
@@ -181,7 +186,7 @@ public class HouseAdsDialog {
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(mCompatActivity).setView(view);
-            final AlertDialog dialog = builder.create();
+            dialog = builder.create();
             //noinspection ConstantConditions
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
@@ -237,7 +242,7 @@ public class HouseAdsDialog {
         @Override
         protected void onPostExecute(String result) {
             jsonRawResponse = result;
-            //showAd(result);
+            setUp(result);
         }
     }
 
