@@ -13,7 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -22,6 +21,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
@@ -56,7 +56,7 @@ public class HouseAdsDialog {
     private AdListener mAdListener;
     private AlertDialog dialog;
 
-    private int lastLoaded = 0;
+    private static int lastLoaded = 0;
 
     public HouseAdsDialog(Context context) {
         this.mCompatActivity = context;
@@ -86,25 +86,21 @@ public class HouseAdsDialog {
         isAdLoaded = false;
         if (jsonUrl.trim().equals("")) throw new IllegalArgumentException("Url is Blank!");
         else {
-            if (jsonRawResponse.equals("")) new ScanUrlTask(jsonUrl).execute();
-            else {
-                if (!forceLoadFresh) setUp(jsonRawResponse);
-                else new ScanUrlTask(jsonUrl).execute();
-            }
+            if (forceLoadFresh || jsonRawResponse.equals("")) new ScanUrlTask(jsonUrl).execute();
+            if (!forceLoadFresh && !jsonRawResponse.trim().equals("")) setUp(jsonRawResponse);
         }
     }
 
     public void showAd() {
-        dialog.show();
+        if (dialog != null) dialog.show();
     }
 
     private void setUp(String response) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mCompatActivity);
         ArrayList<DialogModal> val = new ArrayList<>();
 
-        String x = new String(new StringBuilder().append(response));
-
         try {
-            JSONObject rootObject = new JSONObject(x);
+            JSONObject rootObject = new JSONObject(response);
             JSONArray array = rootObject.optJSONArray("apps");
 
             for (int object = 0; object < array.length(); object++) {
@@ -132,6 +128,7 @@ public class HouseAdsDialog {
             if (lastLoaded == val.size() - 1) lastLoaded = 0;
             else lastLoaded++;
 
+
             @SuppressLint("InflateParams") final View view = LayoutInflater.from(mCompatActivity).inflate(R.layout.dialog, null);
 
             if (dialogModal.getIconUrl().trim().equals("") || !dialogModal.getIconUrl().trim().contains("http")) throw new IllegalArgumentException("Icon URL should not be Null or Blank & should start with \"http\"");
@@ -149,31 +146,33 @@ public class HouseAdsDialog {
             Glide.with(mCompatActivity).asBitmap().load(dialogModal.getIconUrl()).into(new SimpleTarget<Bitmap>(Integer.MIN_VALUE, Integer.MIN_VALUE) {
                 @Override
                 public void onResourceReady(@NonNull Bitmap glideBitmap, Transition<? super Bitmap> p2) {
+                    icon.setImageBitmap(glideBitmap);
+
+                    Palette palette = Palette.from(glideBitmap).generate();
+                    int dominantColor = palette.getDominantColor(ContextCompat.getColor(mCompatActivity, R.color.colorAccent));
+
                     if (!showHeader) {
                         isAdLoaded = true;
                         if (mAdListener != null) mAdListener.onAdLoaded();
                     }
-                    icon.setImageBitmap(glideBitmap);
+                    GradientDrawable drawable = (GradientDrawable)  view.findViewById(R.id.appinstall_call_to_action).getBackground();
+                    drawable.setColor(dominantColor);
 
                     if (dialogModal.getRating() != 0) {
                         ratings.setRating(dialogModal.getRating());
-                        Palette palette = Palette.from(glideBitmap).generate();
-                        Drawable drawable = ratings.getProgressDrawable();
-                        drawable.setColorFilter(palette.getDominantColor(ContextCompat.getColor(mCompatActivity, R.color.colorAccent)), PorterDuff.Mode.SRC_ATOP);
-                    }
-                    else view.findViewById(R.id.rating).setVisibility(View.GONE);
-
-                    GradientDrawable drawable = (GradientDrawable)  view.findViewById(R.id.appinstall_call_to_action).getBackground();
-                    Palette palette = Palette.from(glideBitmap).generate();
-                    drawable.setColor(palette.getDominantColor(ContextCompat.getColor(mCompatActivity, R.color.colorAccent)));
+                        Drawable ratingsDrawable = ratings.getProgressDrawable();
+                        DrawableCompat.setTint(ratingsDrawable, dominantColor);
+                    } else view.findViewById(R.id.rating).setVisibility(View.GONE);
                 }});
 
             if (!dialogModal.getLargeImageUrl().trim().equals("") && showHeader) view.findViewById(R.id.large).setVisibility(View.VISIBLE);
             Glide.with(mCompatActivity).asBitmap().apply(new RequestOptions().override(headerImage.getWidth(), 175)).load(dialogModal.getLargeImageUrl()).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
-                    if (showHeader) isAdLoaded = true;
-                    if (mAdListener != null) mAdListener.onAdLoaded();
+                    if (showHeader) {
+                        isAdLoaded = true;
+                        if (mAdListener != null) mAdListener.onAdLoaded();
+                    }
                     headerImage.setImageBitmap(bitmap);
                 }
             });
@@ -185,11 +184,10 @@ public class HouseAdsDialog {
             else price.setText(String.format("Price: %s", dialogModal.getPrice()));
 
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(mCompatActivity).setView(view);
+            builder.setView(view);
             dialog = builder.create();
             //noinspection ConstantConditions
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialogInterface) {
@@ -213,11 +211,12 @@ public class HouseAdsDialog {
                 @Override
                 public void onClick(View view) {
                     dialog.dismiss();
-                    if (mAdListener != null) mAdListener.onApplicationLeft();
                     Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + dialogModal.getPackageName()));
                     try {
                         mCompatActivity.startActivity(goToMarket);
+                        if (mAdListener != null) mAdListener.onApplicationLeft();
                     } catch (ActivityNotFoundException e) {
+                        if (mAdListener != null) mAdListener.onApplicationLeft();
                         mCompatActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + dialogModal.getPackageName())));
                     }
                 }

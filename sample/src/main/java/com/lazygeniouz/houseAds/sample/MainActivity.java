@@ -35,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAdClosed() {}
 
             @Override
-            public void onAdShown() {}
+            public void onAdShown() {
+                Toast.makeText(MainActivity.this, "AdShown", Toast.LENGTH_SHORT).show();
+            }
 
             @Override
             public void onApplicationLeft() {}
@@ -56,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAdClosed() {}
 
             @Override
-            public void onAdShown() {}
+            public void onAdShown() {
+                Toast.makeText(MainActivity.this, "AdShown", Toast.LENGTH_SHORT).show();
+            }
 
             @Override
             public void onApplicationLeft() {}
