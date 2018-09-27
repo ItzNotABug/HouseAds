@@ -60,7 +60,7 @@ houseAds.loadAds();
              
 <br/>You can check if the Ad is loaded via - 
 ```java
-houseAds.isAddLoaded(); returns true if Loaded, false otherwise!
+houseAds.isAdLoaded(); returns true if Loaded, false otherwise!
 ```
     
 <br/>You can also add a Listener to HouseAdsDialog,
