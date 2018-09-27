@@ -21,7 +21,7 @@ Primary Goal:
        "app_rating": "4.5",
        "app_cta_text": "Install",
        "app_price": "Free",
-       "app_adType: "dialog"
+       "app_adType": "dialog"
      },
 
      {
@@ -33,7 +33,7 @@ Primary Goal:
        "app_rating": "4.5",
        "app_cta_text": "Install",
        "app_price": "Free",
-       "app_adType: "interstitial"
+       "app_adType": "interstitial"
      }]
      }
 ```
