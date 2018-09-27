@@ -1,6 +1,6 @@
 # HouseAds
 A simple Android library (currently in very, very early stage) to cross promote your apps, sites!
-<br/>Currently includes a Dialog & Interstitial Ad fetched from a json which is stored on a site/server.
+<br/>Currently includes a Dialog & Interstitial Ad fetched from a json stored on a site/server.
 
 
 Primary Goal:
