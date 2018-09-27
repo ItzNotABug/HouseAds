@@ -24,6 +24,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +52,9 @@ public class HouseAdsDialog {
 
     private boolean showHeader = true;
     private boolean forceLoadFresh = true;
+    private boolean hideIfAppInstalled  = false;
+    private int cardCorner = 25;
+    private int ctaCorner = 25;
     private static boolean isAdLoaded = false;
 
     private AdListener mAdListener;
@@ -70,6 +74,14 @@ public class HouseAdsDialog {
         this.showHeader = val;
     }
 
+    public void setCardCorners(int corners) {
+        this.cardCorner = corners;
+    }
+
+    public void setCtaCorner(int corner) {
+        this.ctaCorner = corner;
+    }
+
     public void setForceLoadFresh(boolean val) {
         this.forceLoadFresh = val;
     }
@@ -80,6 +92,10 @@ public class HouseAdsDialog {
 
     public boolean isAdLoaded() {
         return isAdLoaded;
+    }
+
+    public void hideIfAppInstalled(boolean val) {
+        this.hideIfAppInstalled = val;
     }
 
     public void loadAds() {
@@ -95,6 +111,7 @@ public class HouseAdsDialog {
         if (dialog != null) dialog.show();
     }
 
+    @SuppressLint("NewApi")
     private void setUp(String response) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mCompatActivity);
         ArrayList<DialogModal> val = new ArrayList<>();
@@ -106,17 +123,25 @@ public class HouseAdsDialog {
             for (int object = 0; object < array.length(); object++) {
                 final JSONObject jsonObject = array.getJSONObject(object);
 
-                final DialogModal dialogModal = new DialogModal();
-                dialogModal.setAppTitle(jsonObject.optString("app_title"));
-                dialogModal.setAppDesc(jsonObject.optString("app_desc"));
-                dialogModal.setIconUrl(jsonObject.optString("app_icon"));
-                dialogModal.setLargeImageUrl(jsonObject.optString("app_header_image"));
-                dialogModal.setCtaText(jsonObject.optString("app_cta_text"));
-                dialogModal.setPackageName(jsonObject.optString("app_package"));
-                dialogModal.setRating(jsonObject.optInt("app_rating"));
-                dialogModal.setPrice(jsonObject.optString("app_price"));
 
-                val.add(dialogModal);
+                if (hideIfAppInstalled && !jsonObject.optString("app_uri").startsWith("http") &&  Helper.isAppInstalled(mCompatActivity, jsonObject.optString("app_uri"))) array.remove(object);
+                //ToDo: Handle remove() on pre 19!
+                else {
+                    //We Only Add Dialog Ones!
+                    if (jsonObject.optString("app_adType").equals("dialog")) {
+                        final DialogModal dialogModal = new DialogModal();
+                        dialogModal.setAppTitle(jsonObject.optString("app_title"));
+                        dialogModal.setAppDesc(jsonObject.optString("app_desc"));
+                        dialogModal.setIconUrl(jsonObject.optString("app_icon"));
+                        dialogModal.setLargeImageUrl(jsonObject.optString("app_header_image"));
+                        dialogModal.setCtaText(jsonObject.optString("app_cta_text"));
+                        dialogModal.setPackageOrUrl(jsonObject.optString("app_uri"));
+                        dialogModal.setRating(jsonObject.optInt("app_rating"));
+                        dialogModal.setPrice(jsonObject.optString("app_price"));
+
+                        val.add(dialogModal);
+                    }
+                }
             }
 
         } catch (JSONException e) {
@@ -134,11 +159,17 @@ public class HouseAdsDialog {
             if (dialogModal.getIconUrl().trim().equals("") || !dialogModal.getIconUrl().trim().contains("http")) throw new IllegalArgumentException("Icon URL should not be Null or Blank & should start with \"http\"");
             if (!dialogModal.getLargeImageUrl().trim().equals("") && !dialogModal.getIconUrl().trim().contains("http")) throw new IllegalArgumentException("Header Image URL should start with \"http\"");
 
+            CardView cardView = view.findViewById(R.id.card_view);
+            cardView.setRadius(cardCorner);
+
+            Button cta = view.findViewById(R.id.appinstall_call_to_action);
+            GradientDrawable gd = (GradientDrawable) cta.getBackground();
+            gd.setCornerRadius(ctaCorner);
+
             final ImageView icon = view.findViewById(R.id.appinstall_app_icon);
             final ImageView headerImage = view.findViewById(R.id.large);
             TextView title = view.findViewById(R.id.appinstall_headline);
             TextView description = view.findViewById(R.id.appinstall_body);
-            Button cta = view.findViewById(R.id.appinstall_call_to_action);
             final RatingBar ratings = view.findViewById(R.id.rating);
             TextView price = view.findViewById(R.id.price);
 
@@ -211,13 +242,20 @@ public class HouseAdsDialog {
                 @Override
                 public void onClick(View view) {
                     dialog.dismiss();
-                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + dialogModal.getPackageName()));
-                    try {
-                        mCompatActivity.startActivity(goToMarket);
+
+                    String packageOrUrl = dialogModal.getPackageOrUrl();
+                    if (packageOrUrl.trim().startsWith("http")) {
+                        mCompatActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(packageOrUrl)));
                         if (mAdListener != null) mAdListener.onApplicationLeft();
-                    } catch (ActivityNotFoundException e) {
-                        if (mAdListener != null) mAdListener.onApplicationLeft();
-                        mCompatActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + dialogModal.getPackageName())));
+                    }
+                    else {
+                        try {
+                            mCompatActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageOrUrl)));
+                            if (mAdListener != null) mAdListener.onApplicationLeft();
+                        } catch (ActivityNotFoundException e) {
+                            if (mAdListener != null) mAdListener.onApplicationLeft();
+                            mCompatActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + packageOrUrl)));
+                        }
                     }
                 }
             });
@@ -240,8 +278,13 @@ public class HouseAdsDialog {
 
         @Override
         protected void onPostExecute(String result) {
-            jsonRawResponse = result;
-            setUp(result);
+            if (!result.trim().equals("")) {
+                jsonRawResponse = result;
+                setUp(result);
+            }
+            else {
+                if (mAdListener != null) mAdListener.onAdLoadFailed();
+            }
         }
     }
 

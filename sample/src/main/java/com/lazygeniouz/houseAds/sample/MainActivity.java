@@ -21,11 +21,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final String adURL = "https://www.lazygeniouz.com/houseAds/ads.json";
         final TextView txt = findViewById(R.id.txt);
 
         final HouseAdsDialog houseAds = new HouseAdsDialog(MainActivity.this);
-        houseAds.setUrl("https://www.lazygeniouz.com/houseAds/ads.json");
+        houseAds.setUrl(adURL);
+        houseAds.hideIfAppInstalled(true);
+        houseAds.setCardCorners(100);
+        houseAds.setCtaCorner(100);
+        houseAds.setForceLoadFresh(false);
+        houseAds.showHeaderIfAvailable(false);
         houseAds.addListener(new AdListener() {
+            @Override
+            public void onAdLoadFailed() {
+                houseAds.loadAds();
+            }
+
             @Override
             public void onAdLoaded() {
                 houseAds.showAd();
@@ -47,8 +58,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         final HouseAdsDialog houseAdsDialog = new HouseAdsDialog(this);
-        houseAdsDialog.setUrl("https://www.lazygeniouz.com/houseAds/ads.json");
+        houseAdsDialog.setUrl(adURL);
+        houseAdsDialog.setCardCorners(50);
+        houseAdsDialog.setCtaCorner(50);
+        houseAdsDialog.setForceLoadFresh(true);
+        houseAdsDialog.showHeaderIfAvailable(true);
         houseAdsDialog.addListener(new AdListener() {
+            @Override
+            public void onAdLoadFailed() {
+                houseAdsDialog.loadAds();
+            }
+
             @Override
             public void onAdLoaded() {
                 houseAdsDialog.showAd();
@@ -67,8 +87,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         interstitial = new HouseAdsInterstitial(MainActivity.this);
-        interstitial.setUrl("https://www.lazygeniouz.com/houseAds/interstitial.json");
+        interstitial.setUrl(adURL);
         interstitial.addListener(new AdListener() {
+            @Override
+            public void onAdLoadFailed() {
+                interstitial.loadAd();
+            }
+
             @SuppressLint("SetTextI18n")
             @Override
             public void onAdLoaded() {
@@ -92,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onApplicationLeft() {
+                findViewById(R.id.button3).setEnabled(false);
+                interstitial.loadAd();
                 Toast.makeText(MainActivity.this, "Application Left", Toast.LENGTH_SHORT).show();
             }
         });
@@ -100,8 +127,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                houseAds.setForceLoadFresh(false);
-                houseAds.showHeaderIfAvailable(false);
                 houseAds.loadAds();
             }
         });
@@ -109,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                houseAdsDialog.setForceLoadFresh(true);
-                houseAdsDialog.showHeaderIfAvailable(true);
                 houseAdsDialog.loadAds();
             }
         });

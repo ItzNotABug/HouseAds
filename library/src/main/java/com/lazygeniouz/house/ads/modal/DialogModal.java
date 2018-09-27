@@ -11,7 +11,7 @@ public class DialogModal {
     private String appTitle;
     private String appDesc;
     private String largeImageUrl;
-    private String packageName;
+    private String packageNameOrUrl;
     private String ctaText;
     private String price;
     private int rating;
@@ -36,8 +36,8 @@ public class DialogModal {
         this.largeImageUrl = largeImageUrl;
     }
 
-    public void setPackageName(String pgn) {
-        this.packageName = pgn;
+    public void setPackageOrUrl(String pgnurl) {
+        this.packageNameOrUrl = pgnurl;
     }
 
     public void setPrice(String val) {
@@ -64,8 +64,8 @@ public class DialogModal {
         return largeImageUrl;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public String getPackageOrUrl() {
+        return packageNameOrUrl;
     }
 
     public String getCtaText() {

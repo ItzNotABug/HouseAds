@@ -9,21 +9,21 @@ package com.lazygeniouz.house.ads.modal;
 public class InterstitialModal {
 
     private String interstitialImageUrl;
-    private String packageName;
+    private String packageOrUrl;
 
     public void setInterstitialImageUrl(String interstitialImageUrl) {
         this.interstitialImageUrl = interstitialImageUrl;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
+    public void setPackageOrUrl(String packageName) {
+        this.packageOrUrl = packageName;
     }
 
     public String getInterstitialImageUrl() {
         return interstitialImageUrl;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public String getPackageOrUrl() {
+        return packageOrUrl;
     }
 }

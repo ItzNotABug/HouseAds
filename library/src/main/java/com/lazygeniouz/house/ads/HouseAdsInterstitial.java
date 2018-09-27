@@ -82,7 +82,10 @@ public class HouseAdsInterstitial {
 
         @Override
         protected void onPostExecute(String result) {
-            setUp(result);
+            if (!result.trim().equals("")) setUp(result);
+            else {
+                if (mAdListener != null) mAdListener.onAdLoadFailed();
+            }
         }
     }
 
@@ -97,11 +100,13 @@ public class HouseAdsInterstitial {
 
             for (int object = 0; object < array.length(); object++) {
                 JSONObject jsonObject = array.getJSONObject(object);
-                InterstitialModal interstitialModal = new InterstitialModal();
 
-                interstitialModal.setInterstitialImageUrl(jsonObject.optString("app_interstitial_url"));
-                interstitialModal.setPackageName(jsonObject.optString("app_package"));
-                modalArrayList.add(interstitialModal);
+                if (jsonObject.optString("app_adType").equals("interstitial")) {
+                    InterstitialModal interstitialModal = new InterstitialModal();
+                    interstitialModal.setInterstitialImageUrl(jsonObject.optString("app_interstitial_url"));
+                    interstitialModal.setPackageOrUrl(jsonObject.optString("app_uri"));
+                    modalArrayList.add(interstitialModal);
+                }
             }
 
         } catch (JSONException e) { e.printStackTrace(); }
@@ -119,12 +124,11 @@ public class HouseAdsInterstitial {
                     isAdLoaded = true;
                 }
             });
-            packageName = modal.getPackageName();
+            packageName = modal.getPackageOrUrl();
         }
     }
 
     public void show() {
-        //InterstitialActivity activity = new InterstitialActivity();
         mContext.startActivity(new Intent(mContext, InterstitialActivity.class));
         if (mContext instanceof AppCompatActivity) ((AppCompatActivity) mContext).overridePendingTransition(0, 0);
     }
@@ -146,15 +150,26 @@ public class HouseAdsInterstitial {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mAdListener != null) mAdListener.onApplicationLeft();
                     isAdLoaded = false;
-                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
-                    try {
-                        startActivity(goToMarket);
+                    if (packageName.startsWith("http")) {
+                        Intent val = new Intent(Intent.ACTION_VIEW, Uri.parse(packageName));
+                        val.setPackage("com.android.chrome");
+                        if (val.resolveActivity(getPackageManager()) != null) startActivity(val);
+                        else startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(packageName)));
+
+                        if (mAdListener != null) mAdListener.onApplicationLeft();
                         finish();
-                    } catch (ActivityNotFoundException e) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + packageName)));
-                        finish();
+                    }
+                    else {
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
+                            if (mAdListener != null) mAdListener.onApplicationLeft();
+                            finish();
+                        } catch (ActivityNotFoundException e) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + packageName)));
+                            if (mAdListener != null) mAdListener.onApplicationLeft();
+                            finish();
+                        }
                     }
                 }
             });

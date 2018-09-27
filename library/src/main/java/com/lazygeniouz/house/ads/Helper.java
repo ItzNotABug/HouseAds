@@ -6,6 +6,9 @@
 
 package com.lazygeniouz.house.ads;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -38,5 +41,16 @@ public class Helper {
         else return "";
     }
 
+    public static boolean isAppInstalled(Context mActivity, String packageName) {
+        PackageManager pm = mActivity.getPackageManager();
+        boolean isInstalled;
+        try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            isInstalled = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            isInstalled = false;
+        }
+        return isInstalled;
+    }
 
 }
