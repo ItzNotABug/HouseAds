@@ -162,7 +162,10 @@ houseAdsNative.setNativeAdListener(new NativeAdListener() {
 });
 houseAdsNative.loadAds();
 ```
-
+<br/>Check if NativeAd is loaded - 
+```java
+houseAdsNative.isAdLoaded();
+```
 
 # ToDo:
 * Add Sample App Screenshots.
