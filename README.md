@@ -128,7 +128,7 @@ interstitial.show();
 
 # ToDo:
 * Add Sample App Screenshots.
-* Add the NativeHouseAd Support.
+* <strike>Add the NativeHouseAd Support.</strike> ✔
 * Add Library to JCenter(); !
 
  
