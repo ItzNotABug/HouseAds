@@ -4,18 +4,22 @@
  * Copyright (c) 2018.
  */
 
-package com.lazygeniouz.house.ads;
+package com.lazygeniouz.house.ads.helper;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
+
+import com.bumptech.glide.Glide;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 
-public class Helper {
-    static String parseJsonObject (String url) {
+public class HouseAdsHelper {
+    public static String parseJsonObject (String url) {
         Document doc = null;
         try {
             doc = Jsoup
@@ -53,4 +57,26 @@ public class Helper {
         return isInstalled;
     }
 
+
+    @SuppressLint("StaticFieldLeak")
+    public static void clearGlideCache(final Context context) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                Glide.get(context).clearMemory();
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Glide.get(context).clearDiskCache();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+        }.execute();
+    }
 }

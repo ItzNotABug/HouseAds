@@ -33,9 +33,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.modal.DialogModal;
 
@@ -86,7 +86,7 @@ public class HouseAdsDialog {
         this.forceLoadFresh = val;
     }
 
-    public void addListener(AdListener listener) {
+    public void setAdListener(AdListener listener) {
         this.mAdListener = listener;
     }
 
@@ -124,7 +124,7 @@ public class HouseAdsDialog {
                 final JSONObject jsonObject = array.getJSONObject(object);
 
 
-                if (hideIfAppInstalled && !jsonObject.optString("app_uri").startsWith("http") &&  Helper.isAppInstalled(mCompatActivity, jsonObject.optString("app_uri"))) array.remove(object);
+                if (hideIfAppInstalled && !jsonObject.optString("app_uri").startsWith("http") &&  HouseAdsHelper.isAppInstalled(mCompatActivity, jsonObject.optString("app_uri"))) array.remove(object);
                 //ToDo: Handle remove() on pre 19!
                 else {
                     //We Only Add Dialog Ones!
@@ -174,9 +174,9 @@ public class HouseAdsDialog {
             TextView price = view.findViewById(R.id.price);
 
 
-            Glide.with(mCompatActivity).asBitmap().load(dialogModal.getIconUrl()).into(new SimpleTarget<Bitmap>(Integer.MIN_VALUE, Integer.MIN_VALUE) {
+            Glide.with(mCompatActivity).load(dialogModal.getIconUrl()).asBitmap().into(new SimpleTarget<Bitmap>(Integer.MIN_VALUE, Integer.MIN_VALUE) {
                 @Override
-                public void onResourceReady(@NonNull Bitmap glideBitmap, Transition<? super Bitmap> p2) {
+                public void onResourceReady(@NonNull Bitmap glideBitmap, GlideAnimation<? super Bitmap> p2) {
                     icon.setImageBitmap(glideBitmap);
 
                     Palette palette = Palette.from(glideBitmap).generate();
@@ -197,9 +197,9 @@ public class HouseAdsDialog {
                 }});
 
             if (!dialogModal.getLargeImageUrl().trim().equals("") && showHeader) view.findViewById(R.id.large).setVisibility(View.VISIBLE);
-            Glide.with(mCompatActivity).asBitmap().apply(new RequestOptions().override(headerImage.getWidth(), 175)).load(dialogModal.getLargeImageUrl()).into(new SimpleTarget<Bitmap>() {
+            Glide.with(mCompatActivity).load(dialogModal.getLargeImageUrl()).asBitmap()/*.override(0, 175)*/.into(new SimpleTarget<Bitmap>() {
                 @Override
-                public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+                public void onResourceReady(@NonNull Bitmap bitmap, @Nullable GlideAnimation<? super Bitmap> transition) {
                     if (showHeader) {
                         isAdLoaded = true;
                         if (mAdListener != null) mAdListener.onAdLoaded();
@@ -273,7 +273,7 @@ public class HouseAdsDialog {
 
         @Override
         protected String doInBackground(String... p1) {
-                return Helper.parseJsonObject(url);
+                return HouseAdsHelper.parseJsonObject(url);
         }
 
         @Override

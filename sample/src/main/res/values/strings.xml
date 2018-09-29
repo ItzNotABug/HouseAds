@@ -3,4 +3,7 @@
     <string name="load_ad_cached">Load Ad (Cached) without Header Image</string>
     <string name="load_ad_fresh_fetch">Load Ad (Fresh Fetch) with Header Image</string>
     <string name="show_interstitial">Show Interstitial</string>
+    <string name="clear_glide_cache">Clear Glide Cache</string>
+    <string name="native_ads_activity">Native Ads Activity</string>
+    <string name="load_native_ad">Load Native Ad</string>
 </resources>

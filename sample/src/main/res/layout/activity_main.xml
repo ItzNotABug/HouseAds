@@ -30,9 +30,23 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAllCaps="false  "
+        android:textAllCaps="false"
         android:text="@string/show_interstitial"
         android:enabled="false"/>
 
+
+    <Button
+        android:id="@+id/clearCache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_glide_cache"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/nativeActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/native_ads_activity"
+        android:textAllCaps="false"/>
 
 </LinearLayout>

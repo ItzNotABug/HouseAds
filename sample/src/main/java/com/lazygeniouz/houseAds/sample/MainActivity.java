@@ -1,6 +1,7 @@
 package com.lazygeniouz.houseAds.sample;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.lazygeniouz.house.ads.HouseAdsDialog;
 import com.lazygeniouz.house.ads.HouseAdsInterstitial;
+import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
 import com.lazygeniouz.house.ads.listener.AdListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         houseAds.setCtaCorner(100);
         houseAds.setForceLoadFresh(false);
         houseAds.showHeaderIfAvailable(false);
-        houseAds.addListener(new AdListener() {
+        houseAds.setAdListener(new AdListener() {
             @Override
             public void onAdLoadFailed() {
                 houseAds.loadAds();
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         houseAdsDialog.setCtaCorner(50);
         houseAdsDialog.setForceLoadFresh(true);
         houseAdsDialog.showHeaderIfAvailable(true);
-        houseAdsDialog.addListener(new AdListener() {
+        houseAdsDialog.setAdListener(new AdListener() {
             @Override
             public void onAdLoadFailed() {
                 houseAdsDialog.loadAds();
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         interstitial = new HouseAdsInterstitial(MainActivity.this);
         interstitial.setUrl(adURL);
-        interstitial.addListener(new AdListener() {
+        interstitial.setAdListener(new AdListener() {
             @Override
             public void onAdLoadFailed() {
                 interstitial.loadAd();
@@ -115,8 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onApplicationLeft() {
+                txt.setText("Interstitial Ad Closed");
                 findViewById(R.id.button3).setEnabled(false);
                 interstitial.loadAd();
                 Toast.makeText(MainActivity.this, "Application Left", Toast.LENGTH_SHORT).show();
@@ -142,6 +146,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (interstitial.isAdLoaded()) interstitial.show();
+            }
+        });
+
+        findViewById(R.id.clearCache).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HouseAdsHelper.clearGlideCache(MainActivity.this);
+            }
+        });
+
+        findViewById(R.id.nativeActivity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, NativeAdActivity.class));
             }
         });
     }

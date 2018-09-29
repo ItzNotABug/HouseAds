@@ -23,8 +23,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.modal.InterstitialModal;
 
@@ -49,7 +50,7 @@ public class HouseAdsInterstitial {
         this.mContext = context;
     }
 
-    public void addListener(AdListener adListener) {
+    public void setAdListener(AdListener adListener) {
         mAdListener = adListener;
     }
 
@@ -77,7 +78,7 @@ public class HouseAdsInterstitial {
 
         @Override
         protected String doInBackground(String... p1) {
-            return Helper.parseJsonObject(url);
+            return HouseAdsHelper.parseJsonObject(url);
         }
 
         @Override
@@ -116,9 +117,9 @@ public class HouseAdsInterstitial {
             if (lastLoaded == modalArrayList.size() - 1) lastLoaded = 0;
             else lastLoaded++;
 
-            Glide.with(mContext).asBitmap().load(modal.getInterstitialImageUrl()).into(new SimpleTarget<Bitmap>() {
+            Glide.with(mContext).load(modal.getInterstitialImageUrl()).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override
-                public void onResourceReady(@NonNull Bitmap GBitmap, @Nullable Transition<? super Bitmap> transition) {
+                public void onResourceReady(@NonNull Bitmap GBitmap, @Nullable GlideAnimation<? super Bitmap> transition) {
                     bitmap = GBitmap;
                     if (mAdListener != null) mAdListener.onAdLoaded();
                     isAdLoaded = true;
