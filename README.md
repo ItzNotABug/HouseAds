@@ -13,7 +13,7 @@ Primary Goal:
     "apps":
 
      [{
-       "app_title": "App Name",
+       "app_title": "App Name (Dialog)",
        "app_desc": "Your App's description",
        "app_icon": "https:// URL to Icon",
        "app_header_image": "https:// URL to Header Image",
@@ -25,7 +25,7 @@ Primary Goal:
      },
 
      {
-       "app_title": "App Name 2",
+       "app_title": "App Name 2 (Interstitial)",
        "app_desc": "Your App's Description",
        "app_icon": "https:// URL to Icon",
        "app_header_image": "https:// URL to Header Image",
@@ -34,8 +34,20 @@ Primary Goal:
        "app_cta_text": "Install",
        "app_price": "Free",
        "app_adType": "interstitial"
+     },
+      
+     {
+     "app_title": "App Name 3 (Native Ad)",
+     "app_desc": "Your App's Description",
+     "app_icon": "https:// URL to Icon",
+     "app_header_image": "https:// URL to Header Image",
+     "app_uri": "http:// URL or Package Name - com.package.name",
+     "app_rating": "4.5",
+     "app_cta_text": "Install",
+     "app_price": "Free",
+     "app_adType": "native"
      }]
-     }
+    }
 ```
 
 
