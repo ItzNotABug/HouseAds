@@ -99,7 +99,7 @@ houseAds.addListener(new AdListener() {
 ```
 
 **<br/>NOTE: You cannot Customize the Dialog except for the CardView's Corner Radius & CTA Button's Background Radius!**
-<br/>A `NativeHouseAd` implementation will be added too, where you will have FULL CONTROL of the Layout! :)
+<br/>Use `HouseAdsNative` instead :)
 
 # HouseAdsInterstitial
 <br/>HouseAds also supports Interstitial Ad support just like AdMob has one!
@@ -128,15 +128,9 @@ interstitial.addListener(new AdListener() {
 interstitial.loadAd();
 ```
             
-Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the same way - 
-```java 
-interstitial.isAdLoaded();
-```
+Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the same way - `interstitial.isAdLoaded();`
 
-And show Interstitial like - 
-```java    
-interstitial.show();
-```
+And show Interstitial like - `interstitial.show();`
 
 # HouseAdsNative
 <br/>HouseAdsNative is the type of Ad where you can define your own layouts for the Ad Assets just like AdMob's `NativeAdvancedUnified`.
@@ -174,10 +168,7 @@ houseAdsNative.setNativeAdListener(new NativeAdListener() {
 });
 houseAdsNative.loadAds();
 ```
-<br/>Check if NativeAd is loaded - 
-```java
-houseAdsNative.isAdLoaded();
-```
+<br/>Check if NativeAd is loaded - `houseAdsNative.isAdLoaded();`
 
 # ToDo:
 * Add Sample App Screenshots.
