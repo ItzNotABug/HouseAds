@@ -126,8 +126,8 @@ And show Interstitial like -
 interstitial.show();
 ```
 
-#HouseAdsNative
-HouseAdsNative is the type of Ad where you can define your own layouts for the Ad Assets just like AdMob's `NativeAdvancedUnified`.
+# HouseAdsNative
+<br/>HouseAdsNative is the type of Ad where you can define your own layouts for the Ad Assets just like AdMob's `NativeAdvancedUnified`.
 <br/>You'll need to pass the ids of the Assets (Icon, Call to Action View, Header Image etc) in a `HouseAdsNativeView` in their respective setter methods
 and then set that `NativeView` object to the HouseAdsNative's `setNativeView()` .
 <br/>Following is an example of `HouseAdsNativeView` - 
