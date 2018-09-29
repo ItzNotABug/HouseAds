@@ -126,6 +126,44 @@ And show Interstitial like -
 interstitial.show();
 ```
 
+#HouseAdsNative
+HouseAdsNative is the type of Ad where you can define your own layouts for the Ad Assets just like AdMob's `NativeAdvancedUnified`.
+<br/>You'll need to pass the ids of the Assets (Icon, Call to Action View, Header Image etc) in a `HouseAdsNativeView` in their respective setter methods
+and then set that `NativeView` object to the HouseAdsNative's `setNativeView()` .
+<br/>Following is an example of `HouseAdsNativeView` - 
+```java
+final Relativelayout adLayout = findViewById(R.id.adLayout); //Ad Assets inside a ViewGroup
+adlayout.setVisibility(View.GONE):
+```
+```java
+HouseAdsNativeView nativeView = new HouseAdsNativeView();
+nativeView.setTitleView((TextView) findViewById(R.id.appinstall_headline));
+nativeView.setDescriptionView((TextView) findViewById(R.id.appinstall_body));
+nativeView.setIconView((ImageView) findViewById(R.id.appinstall_app_icon));
+nativeView.setHeaderImageView((ImageView) findViewById(R.id.large));
+nativeView.setCallToActionView(findViewById(R.id.appinstall_call_to_action));
+nativeView.setPriceView((TextView) findViewById(R.id.price));
+nativeView.setRatingsView((RatingBar) findViewById(R.id.rating));
+``` 
+```java
+HouseAdsNative houseAdsNative = new HouseAdsNative(NativeAdActivity.this);
+houseAdsNative.setNativeAdView(nativeView);
+houseAdsNative.setUrl(adUrl);
+houseAdsNative.setNativeAdListener(new NativeAdListener() {            
+    @Override
+    public void onAdLoaded() {
+        adLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onAdLoadFailed() {
+        Toast.makeText(NativeAdActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+    }
+});
+houseAdsNative.loadAds();
+```
+
+
 # ToDo:
 * Add Sample App Screenshots.
 * <strike>Add the NativeHouseAd Support.</strike> ✔
