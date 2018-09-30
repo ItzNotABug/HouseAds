@@ -1,4 +1,19 @@
+//apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'com.android.library'
+
+/*publish {
+
+    def groupProjectID = 'com.lazygeniouz'
+    def artifactProjectID = 'houseAds'
+    def publishVersionID = '1.0'
+
+    repoName = 'Maven'
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = 'A simple Android library to cross promote your apps, websites!'
+    website = 'https://github.com/ItzNotABug/HouseAds'
+}*/
 
 android {
     compileSdkVersion 27
@@ -26,3 +41,6 @@ dependencies {
     //noinspection GradleDependency
     api 'com.github.bumptech.glide:glide:3.8.0'
 }
+
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'

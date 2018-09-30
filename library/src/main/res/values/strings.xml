@@ -1,10 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Darshan Pandya.
+  ~ @itznotabug
+  ~ Copyright (c) 2018.
+  -->
+
 <resources>
-    <string name="app_name">HouseAds!</string>
-    <string name="serif">serif</string>
-    <string name="title">Title</string>
-    <string name="description">Description</string>
     <string name="header_image">Header Image</string>
-    <string name="price_free">Price: Free</string>
-    <string name="interstitial_image">Interstitial Image</string>
-    <string name="close_button">Close Button</string>
+    <string name="interstitial_image">interstitial_image</string>
+    <string name="close_button">Close</string>
 </resources>

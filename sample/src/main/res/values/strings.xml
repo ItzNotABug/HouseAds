@@ -6,4 +6,5 @@
     <string name="clear_glide_cache">Clear Glide Cache</string>
     <string name="native_ads_activity">Native Ads Activity</string>
     <string name="load_native_ad">Load Native Ad</string>
+    <string name="serif">serif</string>
 </resources>

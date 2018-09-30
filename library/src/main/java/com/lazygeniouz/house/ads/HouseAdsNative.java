@@ -132,6 +132,7 @@ public class HouseAdsNative {
 
             if (dialogModal.getIconUrl().trim().equals("") || !dialogModal.getIconUrl().trim().contains("http")) throw new IllegalArgumentException("Icon URL should not be Null or Blank & should start with \"http\"");
             if (!dialogModal.getLargeImageUrl().trim().equals("") && !dialogModal.getIconUrl().trim().contains("http")) throw new IllegalArgumentException("Header Image URL should start with \"http\"");
+            if (dialogModal.getAppTitle().trim().equals("") || dialogModal.getAppDesc().trim().equals("")) throw new IllegalArgumentException("Title & description should not be Null or Blank.");
 
             final View cta = view.getCallToActionView();
 
@@ -154,6 +155,7 @@ public class HouseAdsNative {
             });
 
             if (dialogModal.getLargeImageUrl().trim().equals("")) headerImage.setVisibility(View.GONE);
+            else headerImage.setVisibility(View.VISIBLE);
             Glide.with(mContext).load(dialogModal.getLargeImageUrl()).asBitmap()/*.override(headerImage.getWidth(), headerImage.getHeight())*/.into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
