@@ -1,0 +1,42 @@
+apply plugin: 'com.jfrog.bintray'
+
+version = '1.0'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = 'Maven'
+        name = 'houseAds'
+        desc = 'A simple Android library to cross promote your apps, websites!' // YOUR LIBRARY DESCRIPTION
+        websiteUrl = 'https://github.com/ItzNotABug/HouseAds' // YOUR SITE
+        vcsUrl = 'https://github.com/ItzNotABug/HouseAds.git' // YOUR GIT REPO
+        licenses = ["Apache-2.0"] // A LIST OF YOUR LICENCES
+        publish = true
+        publicDownloadNumbers = false
+    }
+}

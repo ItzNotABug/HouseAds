@@ -171,9 +171,11 @@ houseAdsNative.loadAds();
 <br/>Check if NativeAd is loaded - `houseAdsNative.isAdLoaded();`
 
 # ToDo:
+* Add AdsActivity (Recommendations Activity) with RecyclerView.
+* Add a setView(View view) method in HouseAdsNative.
 * Add Sample App Screenshots.
 * <strike>Add the NativeHouseAd Support.</strike> ✔
-* Add Library to JCenter(); !
+* <strike>Add Library to JCenter();</strike> ✔
 
  
  
