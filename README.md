@@ -8,7 +8,7 @@ Primary Goal:
 <br/>No!, No Banners!
 
 ## Gradle
-<br/>Adding HouseAds in your App - 
+Adding HouseAds in your App - 
 ```gradle
 dependencies {
     implementation 'com.lazygeniouz:houseAds:1.2'
