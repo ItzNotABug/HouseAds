@@ -6,6 +6,7 @@ android {
     defaultConfig {
         applicationId "com.lazygeniouz.houseAds.sample"
         minSdkVersion 14
+        //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
