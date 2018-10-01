@@ -7,7 +7,8 @@ Primary Goal:
 <br/>To keep it Simple & including Ads support like AdMob's Ad (Native, Interstitial)
 <br/>No!, No Banners!
 
-<br/>Adding HouseAds in your App - 
+## Gradle
+Adding HouseAds in your App - 
 ```gradle
 dependencies {
     implementation 'com.lazygeniouz:houseAds:1.2'
