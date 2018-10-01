@@ -8,12 +8,14 @@ Primary Goal:
 <br/>No!, No Banners!
 
 <br/>Adding HouseAds in your App - 
-[ ![houseAds](https://api.bintray.com/packages/itznotabug/Maven/houseAds/images/download.svg) ](https://bintray.com/itznotabug/Maven/houseAds/_latestVersion)
 ```gradle
-implementation 'com.lazygeniouz:houseAds:1.2'
+dependencies {
+    implementation 'com.lazygeniouz:houseAds:1.2'
+}
 ```
 
-<br/>Json Array Schema that you'll have to put on a server:
+## Json Array Schema
+Json Array Schema that you'll have to put on a server:
 ```json 
    {
     "apps":
@@ -61,7 +63,7 @@ implementation 'com.lazygeniouz:houseAds:1.2'
 <!-- <br/>Code Examples will be added later, till then you can check Sample App!-->
 
 ## HouseAdsDialog
-<br/>HouseAdsDialog is a Beautifully Styled Dialog which shows your Ad Assets like Header Image, App Icon, App Title & Description, Call to Action Button, Star Ratings & Price of the App.
+HouseAdsDialog is a Beautifully Styled Dialog which shows your Ad Assets like Header Image, App Icon, App Title & Description, Call to Action Button, Star Ratings & Price of the App.
 <br/>The library internally uses Palette API to color the CTA Button by fetching the `Dominant Color` from Icon Bitmap.
 
 <br/>Following is an example of HouseAdsDialog -     
@@ -108,7 +110,7 @@ houseAds.addListener(new AdListener() {
 <br/>Use `HouseAdsNative` instead :)
 
 ## HouseAdsInterstitial
-<br/>HouseAds also supports Interstitial Ad support just like AdMob has one!
+HouseAds also supports Interstitial Ad support just like AdMob has one!
 <br/>HouseAdsInterstitial shows an Image fetched from your Json & navigates the User to Google Play if you specified a Package Name or the Website otherwise.
 
 <br/>Following is an example of HouseAdsInterstitial - 
@@ -139,7 +141,7 @@ Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the
 And show Interstitial like - `interstitial.show();`
 
 ## HouseAdsNative
-<br/>HouseAdsNative is the type of Ad where you can define your own layouts for the Ad Assets just like AdMob's `NativeAdvancedUnified`.
+HouseAdsNative is the type of Ad where you can define your own layouts for the Ad Assets just like AdMob's `NativeAdvancedUnified`.
 <br/>You'll need to pass the ids of the Assets (Icon, Call to Action View, Header Image etc) in a `HouseAdsNativeView` in their respective setter methods
 and then set that `NativeView` object to the HouseAdsNative's `setNativeView()` .
 <br/>Following is an example of `HouseAdsNativeView` - 
