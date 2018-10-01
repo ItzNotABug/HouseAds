@@ -1,6 +1,6 @@
 apply plugin: 'com.jfrog.bintray'
 
-version = '1.0'
+version = '1.2'
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -32,10 +32,10 @@ bintray {
     pkg {
         repo = 'Maven'
         name = 'houseAds'
-        desc = 'A simple Android library to cross promote your apps, websites!' // YOUR LIBRARY DESCRIPTION
-        websiteUrl = 'https://github.com/ItzNotABug/HouseAds' // YOUR SITE
-        vcsUrl = 'https://github.com/ItzNotABug/HouseAds.git' // YOUR GIT REPO
-        licenses = ["Apache-2.0"] // A LIST OF YOUR LICENCES
+        desc = 'A simple Android library to cross promote your apps, websites!'
+        websiteUrl = 'https://github.com/ItzNotABug/HouseAds'
+        vcsUrl = 'https://github.com/ItzNotABug/HouseAds.git'
+        licenses = ["Apache-2.0"]
         publish = true
         publicDownloadNumbers = false
     }

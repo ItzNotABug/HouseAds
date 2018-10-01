@@ -46,7 +46,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class HouseAdsDialog {
-    private Context mCompatActivity;
+    private final Context mCompatActivity;
     private String jsonUrl;
     private String jsonRawResponse = "";
 
@@ -90,6 +90,7 @@ public class HouseAdsDialog {
         this.mAdListener = listener;
     }
 
+    @SuppressWarnings("unused")
     public boolean isAdLoaded() {
         return isAdLoaded;
     }
@@ -267,7 +268,7 @@ public class HouseAdsDialog {
 
     @SuppressLint("StaticFieldLeak")
     private class ScanUrlTask extends AsyncTask<String, String, String> {
-        String url;
+        final String url;
 
         ScanUrlTask(String url) {
             this.url = url;

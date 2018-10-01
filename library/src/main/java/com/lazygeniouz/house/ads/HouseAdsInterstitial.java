@@ -36,7 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class HouseAdsInterstitial {
-    private Context mContext;
+    private final Context mContext;
     private static AdListener mAdListener;
     private String url;
     private int lastLoaded = 0;
@@ -69,7 +69,7 @@ public class HouseAdsInterstitial {
 
     @SuppressLint("StaticFieldLeak")
     private class ScanUrlTask extends AsyncTask<String, String, String> {
-        String url;
+        final String url;
 
         ScanUrlTask(String url) {
             isAdLoaded = false;

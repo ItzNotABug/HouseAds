@@ -8,6 +8,7 @@ package com.lazygeniouz.house.ads.listener;
 
 import android.view.View;
 
+@SuppressWarnings("unused")
 public interface NativeAdListener {
 
     void onAdLoaded();

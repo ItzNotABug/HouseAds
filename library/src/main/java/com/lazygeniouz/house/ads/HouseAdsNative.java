@@ -35,8 +35,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public class HouseAdsNative {
-    private Context mContext;
+    private final Context mContext;
     private String jsonUrl;
     //private String jsonRawResponse = "";
 
@@ -202,7 +203,7 @@ public class HouseAdsNative {
 
     @SuppressLint("StaticFieldLeak")
     private class ScanUrl extends AsyncTask<String, String, String> {
-        String url;
+        final String url;
 
         ScanUrl(String url) {
             this.url = url;
