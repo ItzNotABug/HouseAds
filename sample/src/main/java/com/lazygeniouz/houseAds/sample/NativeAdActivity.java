@@ -31,7 +31,7 @@ public class NativeAdActivity extends AppCompatActivity {
         setContentView(R.layout.native_activity);
         final CardView card = findViewById(R.id.card_view);
         final Button load = findViewById(R.id.load);
-        GradientDrawable drawable = (GradientDrawable) findViewById(R.id.appinstall_call_to_action).getBackground();
+        GradientDrawable drawable = (GradientDrawable) findViewById(R.id.call_to_action).getBackground();
         drawable.setCornerRadius(100);
 
         HouseAdsNativeView nativeView = new HouseAdsNativeView();
@@ -39,9 +39,9 @@ public class NativeAdActivity extends AppCompatActivity {
         nativeView.setDescriptionView((TextView) findViewById(R.id.appinstall_body));
         nativeView.setIconView((ImageView) findViewById(R.id.appinstall_app_icon));
         nativeView.setHeaderImageView((ImageView) findViewById(R.id.large));
-        nativeView.setCallToActionView(findViewById(R.id.appinstall_call_to_action));
+        nativeView.setCallToActionView(findViewById(R.id.call_to_action));
         nativeView.setPriceView((TextView) findViewById(R.id.price));
-        nativeView.setRatingsView((RatingBar) findViewById(R.id.rating));
+        nativeView.setRatingsView((RatingBar) findViewById(R.id.ratings));
 
         final HouseAdsNative houseAdsNative = new HouseAdsNative(NativeAdActivity.this);
         houseAdsNative.setNativeAdView(nativeView);
@@ -57,7 +57,6 @@ public class NativeAdActivity extends AppCompatActivity {
                 Toast.makeText(NativeAdActivity.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
-
         load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

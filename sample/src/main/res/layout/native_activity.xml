@@ -76,7 +76,7 @@
                         android:layout_marginTop="10dp">
 
                         <RatingBar
-                            android:id="@+id/rating"
+                            android:id="@+id/ratings"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:numStars="5"
@@ -97,7 +97,7 @@
 
             <Button
                 android:layout_below="@id/holder"
-                android:id="@+id/appinstall_call_to_action"
+                android:id="@+id/call_to_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

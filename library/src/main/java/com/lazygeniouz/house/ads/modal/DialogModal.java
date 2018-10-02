@@ -14,7 +14,7 @@ public class DialogModal {
     private String packageNameOrUrl;
     private String ctaText;
     private String price;
-    private int rating;
+    private String rating;
 
     public void setAppTitle(String appTitle) {
         this.appTitle = appTitle;
@@ -44,7 +44,7 @@ public class DialogModal {
         this.price = val;
     }
 
-    public void setRating(int val) {
+    public void setRating(String val) {
         this.rating = val;
     }
 
@@ -76,7 +76,7 @@ public class DialogModal {
         return price;
     }
 
-    public int getRating() {
-        return rating;
+    public float getRating() {
+        return Float.parseFloat(rating);
     }
 }

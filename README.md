@@ -1,5 +1,5 @@
 # HouseAds
-A simple Android library (currently in very, very early stage) to cross promote your apps, sites!
+A simple Android library (currently in early stage) to cross promote your apps, sites!
 <br/>Currently includes a Dialog & Interstitial Ad fetched from a json stored on a site/server.
 
 
@@ -65,13 +65,13 @@ Json Array Schema that you'll have to put on a server:
 
 ## HouseAdsDialog
 HouseAdsDialog is a Beautifully Styled Dialog which shows your Ad Assets like Header Image, App Icon, App Title & Description, Call to Action Button, Star Ratings & Price of the App.
-<br/>The library internally uses Palette API to color the CTA Button by fetching the `Dominant Color` from Icon Bitmap.
+<br/>The library internally uses `Palette API` to color the CTA Button by fetching the `Dominant Color` from Icon or Header Bitmap, whichever available.
 
 <br/>Following is an example of HouseAdsDialog -     
 ```java
 HouseAdsDialog houseAds = new HouseAdsDialog(MainActivity.this);
 houseAds.setUrl(adURL); //URL to Json File
-houseAds.hideIfAppInstalled(true); //An App's Ad won't be shown if ot is Installed on the Device.
+houseAds.hideIfAppInstalled(true); //An App's Ad won't be shown if it is Installed on the Device.
 houseAds.setCardCorners(100); // Set CardView's corner radius.
 houseAds.setCtaCorner(100); //Set CTA Button's background radius.
 houseAds.setForceLoadFresh(false); //Fetch Json everytime loadAds() is called, true by default, if set to false, Json File's Response is kept untill App is closed! 
@@ -81,12 +81,13 @@ houseAds.loadAds();
              
 <br/>You can check if the Ad is loaded via - 
 ```java
-houseAds.isAdLoaded(); returns true if Loaded, false otherwise!
+houseAds.isAdLoaded(); 
+//returns true if loaded, false otherwise!
 ```
     
 <br/>You can also add a Listener to HouseAdsDialog,
 ```java
-houseAds.addListener(new AdListener() {
+houseAds.setAdListener(new AdListener() {
     @Override
     public void onAdLoadFailed() {}
     
@@ -118,7 +119,7 @@ HouseAds also supports Interstitial Ad support just like AdMob has one!
 ```java
 final HouseAdsInterstitial interstitial = new HouseAdsInterstitial(MainActivity.this);
 interstitial.setUrl(adURL);
-interstitial.addListener(new AdListener() {
+interstitial.setAdListener(new AdListener() {
     @Override
     public void onAdLoadFailed() {}
     
@@ -178,6 +179,23 @@ houseAdsNative.setNativeAdListener(new NativeAdListener() {
 houseAdsNative.loadAds();
 ```
 <br/>Check if NativeAd is loaded - `houseAdsNative.isAdLoaded();`
+<br/>Additionally, you can define your own 'Call to Action' Button's action by using a `CallToActionListener`, for e.g.
+```java
+houseAdsNative.setCallToActionListener(new NativeAdListener.CallToActionListener() {
+            @Override
+            public void onCallToActionClicked(View view) {
+                //Do your Stuff!
+            }
+        });
+```
+<br/>**Note: If you don't implement the CTAListener, default implementation is used which navigates the user to PlayStore or Website depending on the passed argument to the "app_uri" object in json, when clicked.**
+
+
+## Clearing the Cache.
+HouseAds uses Glide for Image Loading and Caching, therefore you should clear its cache periodically by calling the following method - 
+```java
+HouseAdsHelper.clearGlideCache(MainActivity.this);
+```
 
 ## ToDo:
 * Add AdsActivity (Recommendations Activity) with RecyclerView.

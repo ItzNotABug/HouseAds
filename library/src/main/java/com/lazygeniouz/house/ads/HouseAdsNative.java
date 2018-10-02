@@ -39,7 +39,7 @@ import java.util.ArrayList;
 public class HouseAdsNative {
     private final Context mContext;
     private String jsonUrl;
-    //private String jsonRawResponse = "";
+    private String jsonRawResponse = "";
 
     private boolean isAdLoaded = false;
     private boolean hideIfAppInstalled  = false;
@@ -79,11 +79,8 @@ public class HouseAdsNative {
     
     public void loadAds() {
         isAdLoaded = false;
-        new ScanUrl(jsonUrl).execute();
-        /*if (jsonUrl.trim().equals("")) throw new IllegalArgumentException("Url is Blank!");
-        else {
-            if (jsonRawResponse.equals(""))
-        }*/
+        if (jsonUrl.trim().equals("")) throw new IllegalArgumentException("Url is Blank!");
+        else new ScanUrl(jsonUrl).execute();
     }
 
 
@@ -112,7 +109,7 @@ public class HouseAdsNative {
                         dialogModal.setLargeImageUrl(jsonObject.optString("app_header_image"));
                         dialogModal.setCtaText(jsonObject.optString("app_cta_text"));
                         dialogModal.setPackageOrUrl(jsonObject.optString("app_uri"));
-                        dialogModal.setRating(jsonObject.optInt("app_rating"));
+                        dialogModal.setRating(jsonObject.optString("app_rating"));
                         dialogModal.setPrice(jsonObject.optString("app_price"));
 
                         val.add(dialogModal);

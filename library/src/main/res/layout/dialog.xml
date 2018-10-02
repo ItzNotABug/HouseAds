@@ -66,13 +66,13 @@
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp">
 
-                    <RatingBar
+                    <android.support.v7.widget.AppCompatRatingBar
                         android:id="@+id/rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:numStars="5"
+                        android:stepSize="0.1"
                         android:isIndicator="true"
-                        android:stepSize="0.5"
                         style="@style/Widget.AppCompat.RatingBar.Small"/>
 
                     <TextView

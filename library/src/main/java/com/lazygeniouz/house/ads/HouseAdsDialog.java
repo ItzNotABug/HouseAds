@@ -137,7 +137,7 @@ public class HouseAdsDialog {
                         dialogModal.setLargeImageUrl(jsonObject.optString("app_header_image"));
                         dialogModal.setCtaText(jsonObject.optString("app_cta_text"));
                         dialogModal.setPackageOrUrl(jsonObject.optString("app_uri"));
-                        dialogModal.setRating(jsonObject.optInt("app_rating"));
+                        dialogModal.setRating(jsonObject.optString("app_rating"));
                         dialogModal.setPrice(jsonObject.optString("app_price"));
 
                         val.add(dialogModal);
