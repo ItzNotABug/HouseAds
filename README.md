@@ -9,6 +9,7 @@ Primary Goal:
 
 ## Gradle
 Adding HouseAds in your App - 
+<br/>[![Library Version](https://img.shields.io/badge/library%20version-1.2-brightgreen.svg)]
 ```gradle
 dependencies {
     implementation 'com.lazygeniouz:houseAds:1.2'
