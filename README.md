@@ -8,7 +8,7 @@ Primary Goal:
 <br/>No!, No Banners!
 
 ## Gradle
-![Library Version](https://img.shields.io/badge/library%20version-1.2-blue.svg)
+[![Download](https://api.bintray.com/packages/itznotabug/Maven/houseAds/images/download.svg) ](https://bintray.com/itznotabug/Maven/houseAds/_latestVersion)
 <br/>Adding HouseAds in your App - 
 ```gradle
 dependencies {
