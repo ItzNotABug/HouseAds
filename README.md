@@ -8,8 +8,8 @@ Primary Goal:
 <br/>No!, No Banners!
 
 ## Gradle
-![Library Version](https://img.shields.io/badge/library%20version-1.2-brightgreen.svg)
-Adding HouseAds in your App - 
+![Library Version](https://img.shields.io/badge/library%20version-1.2-blue.svg)
+<br/>Adding HouseAds in your App - 
 ```gradle
 dependencies {
     implementation 'com.lazygeniouz:houseAds:1.2'
