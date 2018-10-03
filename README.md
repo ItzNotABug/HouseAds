@@ -144,9 +144,14 @@ Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the
 And show Interstitial like - `interstitial.show();`
 
 ## HouseAdsNative
-HouseAdsNative is the type of Ad where you can define your own layouts for the Ad Assets just like AdMob's `NativeAdvancedUnified`.
-<br/>You'll need to pass the ids of the Assets (Icon, Call to Action View, Header Image etc) in a `HouseAdsNativeView` in their respective setter methods
-and then set that `NativeView` object to the HouseAdsNative's `setNativeView()` .
+HouseAdsNative is the type of Ad where you can pass your own views which includes Ad Assets just like AdMob's `NativeAdvancedUnified`.
+<br/>The `setNativeAdView()` method in `HouseAdsNative` accepts two types of object to specify your View containing Ad Assets.
+* HouseAdsNativeAdView Object,
+* View Object containing Ad Assets.
+
+#### HouseAdsNativeView
+If you use a `HouseAdsNativeView`, you'll need to pass the ids of the Assets (Icon, Call to Action View, Header Image etc) in a `HouseAdsNativeView` in their respective setter methods
+and then set that object to the HouseAdsNative's `setNativeView()` .
 <br/>Following is an example of `HouseAdsNativeView` - 
 ```java
 final Relativelayout adLayout = findViewById(R.id.adLayout); //Ad Assets inside a ViewGroup
@@ -162,9 +167,25 @@ nativeView.setCallToActionView(findViewById(R.id.appinstall_call_to_action));
 nativeView.setPriceView((TextView) findViewById(R.id.price));
 nativeView.setRatingsView((RatingBar) findViewById(R.id.rating));
 ``` 
+
+### Passing a View object in HouseAdsNative
+You can also pass a View in the `setNativeAdView()`, however there are some rules you'll need to follow!
+<br/>You'll need to use the same `IDs` for your Ad Assets mentioned below - 
+<br/>
+|   Ad Assets  |           IDs           |
+|:------------:|:-----------------------:|
+| Header Image | `houseAds_header_image` |
+|   App Icon   |   `houseads-app_icon`   |
+|     Title    |     `houseAds_title`    |
+|  Description |  `houseAds_description` |
+|     Price    |     `houseAds_price`    |
+|   RatingBar  |    `houseAds_rating`    |
+
+
 ```java
 HouseAdsNative houseAdsNative = new HouseAdsNative(NativeAdActivity.this);
-houseAdsNative.setNativeAdView(nativeView);
+houseAdsNative.setNativeAdView(nativeView); //HouseAdsNativeView Object
+houseAdsNative.setNativeNativeView(adLayout); //View Object
 houseAdsNative.setUrl(adUrl);
 houseAdsNative.setNativeAdListener(new NativeAdListener() {            
     @Override
