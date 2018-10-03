@@ -172,6 +172,7 @@ nativeView.setRatingsView((RatingBar) findViewById(R.id.rating));
 You can also pass a View in the `setNativeAdView()`, however there are some rules you'll need to follow!
 <br/>You'll need to use the same `IDs` for your Ad Assets mentioned below - 
 <br/>
+```
 |   Ad Assets  |           IDs           |
 |:------------:|:-----------------------:|
 | Header Image | `houseAds_header_image` |
@@ -180,7 +181,7 @@ You can also pass a View in the `setNativeAdView()`, however there are some rule
 |  Description |  `houseAds_description` |
 |     Price    |     `houseAds_price`    |
 |   RatingBar  |    `houseAds_rating`    |
-
+```
 
 ```java
 HouseAdsNative houseAdsNative = new HouseAdsNative(NativeAdActivity.this);
