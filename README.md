@@ -202,6 +202,7 @@ You can also pass a View in the `setNativeAdView()`, however there are some rule
   </tr>
 </table>
 
+#### Loading HouseAdsNative
 ```java
 HouseAdsNative houseAdsNative = new HouseAdsNative(NativeAdActivity.this);
 houseAdsNative.setNativeAdView(nativeView); //HouseAdsNativeView Object
