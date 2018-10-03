@@ -17,7 +17,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -36,6 +35,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
+import com.lazygeniouz.house.ads.helper.JsonPullerTask;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.modal.DialogModal;
 
@@ -103,7 +103,18 @@ public class HouseAdsDialog {
         isAdLoaded = false;
         if (jsonUrl.trim().equals("")) throw new IllegalArgumentException("Url is Blank!");
         else {
-            if (forceLoadFresh || jsonRawResponse.equals("")) new ScanUrlTask(jsonUrl).execute();
+            if (forceLoadFresh || jsonRawResponse.equals("")) new JsonPullerTask(jsonUrl, new JsonPullerTask.JsonPullerListener() {
+                @Override
+                public void onPostExecute(String result) {
+                    if (!result.trim().equals("")) {
+                        jsonRawResponse = result;
+                        setUp(result);
+                    }
+                    else {
+                        if (mAdListener != null) mAdListener.onAdLoadFailed();
+                    }
+                }
+            }).execute();
             if (!forceLoadFresh && !jsonRawResponse.trim().equals("")) setUp(jsonRawResponse);
         }
     }
@@ -162,19 +173,19 @@ public class HouseAdsDialog {
             if (dialogModal.getAppTitle().trim().equals("") || dialogModal.getAppDesc().trim().equals("")) throw new IllegalArgumentException("Title & description should not be Null or Blank.");
 
 
-            CardView cardView = view.findViewById(R.id.card_view);
+            CardView cardView = view.findViewById(R.id.houseAds_card_view);
             cardView.setRadius(cardCorner);
 
-            Button cta = view.findViewById(R.id.appinstall_call_to_action);
+            final Button cta = view.findViewById(R.id.houseAds_cta);
             GradientDrawable gd = (GradientDrawable) cta.getBackground();
             gd.setCornerRadius(ctaCorner);
 
-            final ImageView icon = view.findViewById(R.id.appinstall_app_icon);
-            final ImageView headerImage = view.findViewById(R.id.large);
-            TextView title = view.findViewById(R.id.appinstall_headline);
-            TextView description = view.findViewById(R.id.appinstall_body);
-            final RatingBar ratings = view.findViewById(R.id.rating);
-            TextView price = view.findViewById(R.id.price);
+            final ImageView icon = view.findViewById(R.id.houseAds_app_icon);
+            final ImageView headerImage = view.findViewById(R.id.houseAds_header_image);
+            TextView title = view.findViewById(R.id.houseAds_title);
+            TextView description = view.findViewById(R.id.houseAds_description);
+            final RatingBar ratings = view.findViewById(R.id.houseAds_rating);
+            TextView price = view.findViewById(R.id.houseAds_price);
 
 
             Glide.with(mCompatActivity).load(dialogModal.getIconUrl()).asBitmap().into(new SimpleTarget<Bitmap>(Integer.MIN_VALUE, Integer.MIN_VALUE) {
@@ -189,18 +200,18 @@ public class HouseAdsDialog {
                         isAdLoaded = true;
                         if (mAdListener != null) mAdListener.onAdLoaded();
                     }
-                    GradientDrawable drawable = (GradientDrawable)  view.findViewById(R.id.appinstall_call_to_action).getBackground();
+                    GradientDrawable drawable = (GradientDrawable)  cta.getBackground();
                     drawable.setColor(dominantColor);
 
                     if (dialogModal.getRating() != 0) {
                         ratings.setRating(dialogModal.getRating());
                         Drawable ratingsDrawable = ratings.getProgressDrawable();
                         DrawableCompat.setTint(ratingsDrawable, dominantColor);
-                    } else view.findViewById(R.id.rating).setVisibility(View.GONE);
+                    } else ratings.setVisibility(View.GONE);
                 }});
 
-            if (!dialogModal.getLargeImageUrl().trim().equals("") && showHeader) view.findViewById(R.id.large).setVisibility(View.VISIBLE);
-            Glide.with(mCompatActivity).load(dialogModal.getLargeImageUrl()).asBitmap()/*.override(0, 175)*/.into(new SimpleTarget<Bitmap>() {
+            if (!dialogModal.getLargeImageUrl().trim().equals("") && showHeader) headerImage.setVisibility(View.VISIBLE);
+            Glide.with(mCompatActivity).load(dialogModal.getLargeImageUrl()).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap bitmap, @Nullable GlideAnimation<? super Bitmap> transition) {
                     if (showHeader) {
@@ -264,31 +275,6 @@ public class HouseAdsDialog {
             });
         }
 
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private class ScanUrlTask extends AsyncTask<String, String, String> {
-        final String url;
-
-        ScanUrlTask(String url) {
-            this.url = url;
-        }
-
-        @Override
-        protected String doInBackground(String... p1) {
-                return HouseAdsHelper.parseJsonObject(url);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (!result.trim().equals("")) {
-                jsonRawResponse = result;
-                setUp(result);
-            }
-            else {
-                if (mAdListener != null) mAdListener.onAdLoadFailed();
-            }
-        }
     }
 
 }

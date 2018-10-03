@@ -6,14 +6,12 @@
 
 package com.lazygeniouz.house.ads;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +23,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
+import com.lazygeniouz.house.ads.helper.JsonPullerTask;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.modal.InterstitialModal;
 
@@ -60,39 +58,24 @@ public class HouseAdsInterstitial {
 
     public void loadAd() {
         if (url.trim().equals("")) throw new IllegalArgumentException("Url is Blank!");
-        else new ScanUrlTask(url).execute();
+        else new JsonPullerTask(url, new JsonPullerTask.JsonPullerListener() {
+            @Override
+            public void onPostExecute(String result) {
+                if (!result.trim().equals("")) setUp(result);
+                else {
+                    if (mAdListener != null) mAdListener.onAdLoadFailed();
+                }
+            }
+        }).execute();
     }
 
     public boolean isAdLoaded() {
         return isAdLoaded;
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class ScanUrlTask extends AsyncTask<String, String, String> {
-        final String url;
-
-        ScanUrlTask(String url) {
-            isAdLoaded = false;
-            this.url = url;
-        }
-
-        @Override
-        protected String doInBackground(String... p1) {
-            return HouseAdsHelper.parseJsonObject(url);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (!result.trim().equals("")) setUp(result);
-            else {
-                if (mAdListener != null) mAdListener.onAdLoadFailed();
-            }
-        }
-    }
 
     private void setUp(String val) {
         ArrayList<InterstitialModal> modalArrayList = new ArrayList<>();
-
         String x = new String(new StringBuilder().append(val));
 
         try {
@@ -119,8 +102,8 @@ public class HouseAdsInterstitial {
 
             Glide.with(mContext).load(modal.getInterstitialImageUrl()).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override
-                public void onResourceReady(@NonNull Bitmap GBitmap, @Nullable GlideAnimation<? super Bitmap> transition) {
-                    bitmap = GBitmap;
+                public void onResourceReady(@NonNull Bitmap glideBitmap, @Nullable GlideAnimation<? super Bitmap> transition) {
+                    bitmap = glideBitmap;
                     if (mAdListener != null) mAdListener.onAdLoaded();
                     isAdLoaded = true;
                 }
@@ -135,8 +118,6 @@ public class HouseAdsInterstitial {
     }
 
     public static class InterstitialActivity extends Activity {
-
-        //InterstitialActivity() {}
 
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {

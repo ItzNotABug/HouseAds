@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -25,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
+import com.lazygeniouz.house.ads.helper.JsonPullerTask;
 import com.lazygeniouz.house.ads.listener.NativeAdListener;
 import com.lazygeniouz.house.ads.modal.DialogModal;
 import com.lazygeniouz.house.ads.modal.HouseAdsNativeView;
@@ -46,6 +46,7 @@ public class HouseAdsNative {
     private static int lastLoaded = 0;
 
     private HouseAdsNativeView nativeAdView;
+    private View customNativeView;
     private NativeAdListener mNativeAdListener;
     private NativeAdListener.CallToActionListener ctaListener;
 
@@ -59,6 +60,10 @@ public class HouseAdsNative {
     
     public void setNativeAdView(HouseAdsNativeView nativeAdView) {
         this.nativeAdView = nativeAdView;
+    }
+
+    public void setNativeAdView(View view) {
+        this.customNativeView = view;
     }
     
     public boolean isAdLoaded() {
@@ -80,10 +85,16 @@ public class HouseAdsNative {
     public void loadAds() {
         isAdLoaded = false;
         if (jsonUrl.trim().equals("")) throw new IllegalArgumentException("Url is Blank!");
-        else new ScanUrl(jsonUrl).execute();
+        else new JsonPullerTask(jsonUrl, new JsonPullerTask.JsonPullerListener() {
+            @Override
+            public void onPostExecute(String result) {
+                if (!result.trim().equals("")) setUp(result);
+                else {
+                    if (mNativeAdListener != null) mNativeAdListener.onAdLoadFailed();
+                }
+            }
+        }).execute();
     }
-
-
 
     @SuppressLint("NewApi")
     private void setUp(String response) {
@@ -126,20 +137,39 @@ public class HouseAdsNative {
             if (lastLoaded == val.size() - 1) lastLoaded = 0;
             else lastLoaded++;
 
-            final HouseAdsNativeView view = nativeAdView;
+            TextView title, description, price;
+            final View cta;
+            final ImageView icon, headerImage;
+            final RatingBar ratings;
 
+
+            if (nativeAdView != null) {
+                final HouseAdsNativeView view = nativeAdView;
+                title = view.getTitleView();
+                description = view.getDescriptionView();
+                price = view.getPriceView();
+                cta = view.getCallToActionView();
+                icon = view.getIconView();
+                headerImage = view.getHeaderImageView();
+                ratings = view.getRatingsView();
+            }
+            else {
+                if (customNativeView != null ) {
+                    title = customNativeView.findViewById(R.id.houseAds_title);
+                    description = customNativeView.findViewById(R.id.houseAds_description);
+                    price = customNativeView.findViewById(R.id.houseAds_price);
+                    cta = customNativeView.findViewById(R.id.houseAds_cta);
+                    icon = customNativeView.findViewById(R.id.houseAds_app_icon);
+                    headerImage = customNativeView.findViewById(R.id.houseAds_header_image);
+                    ratings = customNativeView.findViewById(R.id.houseAds_rating);
+                }
+                else throw new NullPointerException("NativeAdView is Null. Either pass HouseAdsNativeView or a View in setNativeAdView()");
+
+            }
             if (dialogModal.getIconUrl().trim().equals("") || !dialogModal.getIconUrl().trim().contains("http")) throw new IllegalArgumentException("Icon URL should not be Null or Blank & should start with \"http\"");
             if (!dialogModal.getLargeImageUrl().trim().equals("") && !dialogModal.getIconUrl().trim().contains("http")) throw new IllegalArgumentException("Header Image URL should start with \"http\"");
             if (dialogModal.getAppTitle().trim().equals("") || dialogModal.getAppDesc().trim().equals("")) throw new IllegalArgumentException("Title & description should not be Null or Blank.");
 
-            final View cta = view.getCallToActionView();
-
-            final ImageView icon = view.getIconView();
-            final ImageView headerImage = view.getHeaderImageView();
-            TextView title = view.getTitleView();
-            TextView description = view.getDescriptionView();
-            final RatingBar ratings = view.getRatingsView();
-            TextView price = view.getPriceView();
 
             Glide.with(mContext).load(dialogModal.getIconUrl()).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override
@@ -152,17 +182,15 @@ public class HouseAdsNative {
                 }
             });
 
-            if (dialogModal.getLargeImageUrl().trim().equals("")) headerImage.setVisibility(View.GONE);
-            else headerImage.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(dialogModal.getLargeImageUrl()).asBitmap()/*.override(headerImage.getWidth(), headerImage.getHeight())*/.into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    headerImage.setImageBitmap(resource);
-                    if (!dialogModal.getLargeImageUrl().trim().equals("")) {
+            if (!dialogModal.getLargeImageUrl().trim().equals(""))
+                Glide.with(mContext).load(dialogModal.getLargeImageUrl()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         isAdLoaded = true;
+                        if (headerImage != null) headerImage.setImageBitmap(resource);
                         if (mNativeAdListener != null) mNativeAdListener.onAdLoaded();
                     }
-                }});
+                });
 
             title.setText(dialogModal.getAppTitle());
             description.setText(dialogModal.getAppDesc());
@@ -172,6 +200,7 @@ public class HouseAdsNative {
             if (cta != null) {
                 if (cta instanceof TextView) ((TextView) cta).setText(dialogModal.getCtaText());
                 if (cta instanceof Button) ((Button) cta).setText(dialogModal.getCtaText());
+                if (!(cta instanceof TextView)) throw new IllegalArgumentException("Call to Action View must be either a Button or a TextView");
 
                 cta.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -192,34 +221,7 @@ public class HouseAdsNative {
                     }
                 });
             }
-            if (!(cta instanceof TextView)) throw new IllegalArgumentException("Call to Action View must be either a Button or a TextView");
         }
 
-    }
-
-
-    @SuppressLint("StaticFieldLeak")
-    private class ScanUrl extends AsyncTask<String, String, String> {
-        final String url;
-
-        ScanUrl(String url) {
-            this.url = url;
-        }
-
-        @Override
-        protected String doInBackground(String... p1) {
-            return HouseAdsHelper.parseJsonObject(url);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (!result.trim().equals("")) {
-                //jsonRawResponse = result;
-                setUp(result);
-            }
-            else {
-                if (mNativeAdListener != null) mNativeAdListener.onAdLoadFailed();
-            }
-        }
     }
 }
