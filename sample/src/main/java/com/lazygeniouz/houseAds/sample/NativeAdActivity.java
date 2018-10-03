@@ -13,14 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lazygeniouz.house.ads.HouseAdsNative;
 import com.lazygeniouz.house.ads.listener.NativeAdListener;
-import com.lazygeniouz.house.ads.modal.HouseAdsNativeView;
 
 public class NativeAdActivity extends AppCompatActivity {
 
@@ -31,21 +27,20 @@ public class NativeAdActivity extends AppCompatActivity {
         setContentView(R.layout.native_activity);
         final CardView card = findViewById(R.id.card_view);
         final Button load = findViewById(R.id.load);
-        GradientDrawable drawable = (GradientDrawable) findViewById(R.id.call_to_action).getBackground();
+        GradientDrawable drawable = (GradientDrawable) findViewById(R.id.houseAds_cta).getBackground();
         drawable.setCornerRadius(100);
 
-        HouseAdsNativeView nativeView = new HouseAdsNativeView();
-        nativeView.setTitleView((TextView) findViewById(R.id.appinstall_headline));
-        nativeView.setDescriptionView((TextView) findViewById(R.id.appinstall_body));
-        nativeView.setIconView((ImageView) findViewById(R.id.appinstall_app_icon));
-        nativeView.setHeaderImageView((ImageView) findViewById(R.id.large));
-        nativeView.setCallToActionView(findViewById(R.id.call_to_action));
+        /*HouseAdsNativeView nativeView = new HouseAdsNativeView();
+        nativeView.setTitleView((TextView) findViewById(R.id.headline));
+        nativeView.setDescriptionView((TextView) findViewById(R.id.body));
+        nativeView.setIconView((ImageView) findViewById(R.id.app_icon));
+        nativeView.setCallToActionView(findViewById(R.id.cta));
         nativeView.setPriceView((TextView) findViewById(R.id.price));
-        nativeView.setRatingsView((RatingBar) findViewById(R.id.ratings));
+        nativeView.setRatingsView((RatingBar) findViewById(R.id.ratings));*/
 
         final HouseAdsNative houseAdsNative = new HouseAdsNative(NativeAdActivity.this);
-        houseAdsNative.setNativeAdView(nativeView);
         houseAdsNative.setUrl("https://www.lazygeniouz.com/houseAds/ads.json");
+        houseAdsNative.setNativeAdView(card);
         houseAdsNative.setNativeAdListener(new NativeAdListener() {
             @Override
             public void onAdLoaded() {
@@ -54,9 +49,11 @@ public class NativeAdActivity extends AppCompatActivity {
 
             @Override
             public void onAdLoadFailed() {
-                Toast.makeText(NativeAdActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NativeAdActivity.this, "AdLoad Failed, Retrying again!", Toast.LENGTH_SHORT).show();
+                //houseAdsNative.loadAds();
             }
         });
+
         load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

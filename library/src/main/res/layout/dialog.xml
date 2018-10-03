@@ -1,7 +1,7 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
+    android:id="@+id/houseAds_card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -14,7 +14,7 @@
 
 
     <ImageView
-        android:id="@+id/large"
+        android:id="@+id/houseAds_header_image"
         android:layout_width="match_parent"
         android:layout_height="175dp"
         android:scaleType="fitXY"
@@ -26,15 +26,15 @@
 
 
         <LinearLayout
-            android:layout_below="@id/large"
-            android:id="@+id/holder"
+            android:layout_below="@id/houseAds_header_image"
+            android:id="@+id/houseAds_ad_asset_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/appinstall_app_icon"
+                android:id="@+id/houseAds_app_icon"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_margin="10dp"
@@ -47,14 +47,14 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/appinstall_headline"
+                    android:id="@+id/houseAds_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/appinstall_body"
+                    android:id="@+id/houseAds_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -67,7 +67,7 @@
                     android:layout_marginTop="10dp">
 
                     <android.support.v7.widget.AppCompatRatingBar
-                        android:id="@+id/rating"
+                        android:id="@+id/houseAds_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:numStars="5"
@@ -76,7 +76,7 @@
                         style="@style/Widget.AppCompat.RatingBar.Small"/>
 
                     <TextView
-                        android:id="@+id/price"
+                        android:id="@+id/houseAds_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -87,8 +87,8 @@
 
 
         <Button
-            android:layout_below="@id/holder"
-            android:id="@+id/appinstall_call_to_action"
+            android:layout_below="@id/houseAds_ad_asset_holder"
+            android:id="@+id/houseAds_cta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
