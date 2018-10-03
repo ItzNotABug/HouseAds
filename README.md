@@ -182,7 +182,7 @@ You can also pass a View in the `setNativeAdView()`, however there are some rule
   </tr>
   <tr>
     <td class="tg-c3ow">App Icon</td>
-    <td class="tg-c3ow">houseads-app_icon</td>
+    <td class="tg-c3ow">houseads_app_icon</td>
   </tr>
   <tr>
     <td class="tg-c3ow">Title</td>
@@ -241,11 +241,7 @@ HouseAdsHelper.clearGlideCache(MainActivity.this);
 ```
 
 ## ToDo:
-* Add AdsActivity (Recommendations Activity) with RecyclerView.
-* Add a setView(View view) method in HouseAdsNative.
 * Add Sample App Screenshots.
-* <strike>Add the NativeHouseAd Support.</strike> ✔
-* <strike>Add Library to JCenter();</strike> ✔
 
  
  
