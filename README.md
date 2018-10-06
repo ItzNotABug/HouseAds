@@ -182,7 +182,7 @@ You can also pass a View in the `setNativeAdView()`, however there are some rule
   </tr>
   <tr>
     <td class="tg-c3ow">App Icon</td>
-    <td class="tg-c3ow">houseads_app_icon</td>
+    <td class="tg-c3ow">houseAds_app_icon</td>
   </tr>
   <tr>
     <td class="tg-c3ow">Title</td>
