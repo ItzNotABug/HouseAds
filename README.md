@@ -35,14 +35,8 @@ Json Array Schema that you'll have to put on a server:
      },
 
      {
-       "app_title": "App Name 2 (Interstitial)",
-       "app_desc": "Your App's Description",
-       "app_icon": "https:// URL to Icon",
-       "app_header_image": "https:// URL to Header Image",
-       "app_uri": "http:// URL or Package Name - com.package.name",
-       "app_rating": "4.5",
-       "app_cta_text": "Install",
-       "app_price": "Free",
+       "app_interstitial_url": "https://www.lazygeniouz.com/houseAds/four.png",
+       "app_uri": "https://www.lazygeniouz.com",
        "app_adType": "interstitial"
      },
       
