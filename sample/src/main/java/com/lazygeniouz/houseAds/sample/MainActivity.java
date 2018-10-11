@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final String adURL = "https://www.lazygeniouz.com/houseAds/ads.json";
+        final String adURL = "https://kofii12345.usermd.net/apps.json";
         final TextView txt = findViewById(R.id.txt);
 
         final HouseAdsDialog houseAds = new HouseAdsDialog(MainActivity.this);
