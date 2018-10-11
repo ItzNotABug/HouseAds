@@ -35,8 +35,8 @@ Json Array Schema that you'll have to put on a server:
      },
 
      {
-       "app_interstitial_url": "https://www.lazygeniouz.com/houseAds/four.png",
-       "app_uri": "https://www.lazygeniouz.com",
+       "app_interstitial_url": "IMAGE URL",
+       "app_uri": "http:// URL or Package Name - com.package.name",
        "app_adType": "interstitial"
      },
       
