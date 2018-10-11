@@ -32,8 +32,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
 import com.lazygeniouz.house.ads.helper.JsonPullerTask;
 import com.lazygeniouz.house.ads.listener.AdListener;
@@ -52,7 +54,7 @@ public class HouseAdsDialog {
 
     private boolean showHeader = true;
     private boolean forceLoadFresh = true;
-    private boolean hideIfAppInstalled  = false;
+    private boolean hideIfAppInstalled  = true;
     private int cardCorner = 25;
     private int ctaCorner = 25;
     private static boolean isAdLoaded = false;
@@ -211,7 +213,20 @@ public class HouseAdsDialog {
                 }});
 
             if (!dialogModal.getLargeImageUrl().trim().equals("") && showHeader) headerImage.setVisibility(View.VISIBLE);
-            Glide.with(mCompatActivity).load(dialogModal.getLargeImageUrl()).asBitmap().into(new SimpleTarget<Bitmap>() {
+            Glide.with(mCompatActivity).load(dialogModal.getLargeImageUrl()).asBitmap().listener(new RequestListener<String, Bitmap>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                    isAdLoaded = true;
+                    if (mAdListener != null) mAdListener.onAdLoaded();
+                    headerImage.setVisibility(View.GONE);
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    return false;
+                }
+            }).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap bitmap, @Nullable GlideAnimation<? super Bitmap> transition) {
                     if (showHeader) {
