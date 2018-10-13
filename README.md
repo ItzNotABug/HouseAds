@@ -234,6 +234,17 @@ HouseAds uses Glide for Image Loading and Caching, therefore you should clear it
 HouseAdsHelper.clearGlideCache(MainActivity.this);
 ```
 
+## ProGuard
+```
+-keep class org.jsoup.**
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+```
+
 ## ToDo:
 * Add Sample App Screenshots.
 
