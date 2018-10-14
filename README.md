@@ -35,14 +35,8 @@ Json Array Schema that you'll have to put on a server:
      },
 
      {
-       "app_title": "App Name 2 (Interstitial)",
-       "app_desc": "Your App's Description",
-       "app_icon": "https:// URL to Icon",
-       "app_header_image": "https:// URL to Header Image",
+       "app_interstitial_url": "IMAGE URL",
        "app_uri": "http:// URL or Package Name - com.package.name",
-       "app_rating": "4.5",
-       "app_cta_text": "Install",
-       "app_price": "Free",
        "app_adType": "interstitial"
      },
       
@@ -182,7 +176,7 @@ You can also pass a View in the `setNativeAdView()`, however there are some rule
   </tr>
   <tr>
     <td class="tg-c3ow">App Icon</td>
-    <td class="tg-c3ow">houseads_app_icon</td>
+    <td class="tg-c3ow">houseAds_app_icon</td>
   </tr>
   <tr>
     <td class="tg-c3ow">Title</td>
@@ -238,6 +232,17 @@ houseAdsNative.setCallToActionListener(new NativeAdListener.CallToActionListener
 HouseAds uses Glide for Image Loading and Caching, therefore you should clear its cache periodically by calling the following method - 
 ```java
 HouseAdsHelper.clearGlideCache(MainActivity.this);
+```
+
+## ProGuard
+```
+-keep class org.jsoup.**
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
 ```
 
 ## ToDo:

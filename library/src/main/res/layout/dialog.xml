@@ -16,8 +16,9 @@
     <ImageView
         android:id="@+id/houseAds_header_image"
         android:layout_width="match_parent"
-        android:layout_height="175dp"
-        android:scaleType="fitXY"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
