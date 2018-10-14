@@ -25,6 +25,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
 import com.lazygeniouz.house.ads.helper.JsonPullerTask;
+import com.lazygeniouz.house.ads.helper.RemoveJsonObjectCompat;
 import com.lazygeniouz.house.ads.listener.NativeAdListener;
 import com.lazygeniouz.house.ads.modal.DialogModal;
 import com.lazygeniouz.house.ads.modal.HouseAdsNativeView;
@@ -108,8 +109,8 @@ public class HouseAdsNative {
                 final JSONObject jsonObject = array.getJSONObject(object);
 
 
-                if (hideIfAppInstalled && !jsonObject.optString("app_uri").startsWith("http") &&  HouseAdsHelper.isAppInstalled(mContext, jsonObject.optString("app_uri"))) array.remove(object);
-                    //ToDo: Handle remove() on pre 19!
+                if (hideIfAppInstalled && !jsonObject.optString("app_uri").startsWith("http") &&  HouseAdsHelper.isAppInstalled(mContext, jsonObject.optString("app_uri")))
+                    new RemoveJsonObjectCompat(object, array).execute();
                 else {
                     //We Only Add Native Ones!
                     if (jsonObject.optString("app_adType").equals("native")) {

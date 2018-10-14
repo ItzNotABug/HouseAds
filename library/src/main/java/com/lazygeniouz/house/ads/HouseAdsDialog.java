@@ -38,6 +38,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
 import com.lazygeniouz.house.ads.helper.JsonPullerTask;
+import com.lazygeniouz.house.ads.helper.RemoveJsonObjectCompat;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.modal.DialogModal;
 
@@ -138,8 +139,8 @@ public class HouseAdsDialog {
                 final JSONObject jsonObject = array.getJSONObject(object);
 
 
-                if (hideIfAppInstalled && !jsonObject.optString("app_uri").startsWith("http") &&  HouseAdsHelper.isAppInstalled(mCompatActivity, jsonObject.optString("app_uri"))) array.remove(object);
-                //ToDo: Handle remove() on pre 19!
+                if (hideIfAppInstalled && !jsonObject.optString("app_uri").startsWith("http") &&  HouseAdsHelper.isAppInstalled(mCompatActivity, jsonObject.optString("app_uri")))
+                    new RemoveJsonObjectCompat(object, array).execute();
                 else {
                     //We Only Add Dialog Ones!
                     if (jsonObject.optString("app_adType").equals("dialog")) {
