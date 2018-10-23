@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         final HouseAdsDialog houseAds = new HouseAdsDialog(MainActivity.this);
         houseAds.setUrl(adURL);
-        houseAds.hideIfAppInstalled(true);
+        houseAds.hideIfAppInstalled(false);
         houseAds.setCardCorners(100);
         houseAds.setCtaCorner(100);
         houseAds.setForceLoadFresh(false);
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         houseAds.setAdListener(new AdListener() {
             @Override
             public void onAdLoadFailed() {
+                Toast.makeText(MainActivity.this, "Ad Loading Failed, retrying again ", Toast.LENGTH_SHORT).show();
                 houseAds.loadAds();
             }
 
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         houseAdsDialog.setCardCorners(50);
         houseAdsDialog.setCtaCorner(50);
         houseAdsDialog.setForceLoadFresh(true);
+        houseAdsDialog.hideIfAppInstalled(false);
         houseAdsDialog.showHeaderIfAvailable(true);
         houseAdsDialog.setAdListener(new AdListener() {
             @Override
