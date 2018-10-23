@@ -142,7 +142,7 @@ Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the
 And show Interstitial like - `interstitial.show();`
 
 ## HouseAdsNative
-![Screenshots](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/interstitial.png)
+![Screenshots](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/native.png)
 
 HouseAdsNative is the type of Ad where you can pass your own views which includes Ad Assets just like AdMob's `NativeAdvancedUnified`.
 <br/>The `setNativeAdView()` method in `HouseAdsNative` accepts two types of object to specify your View containing Ad Assets.
