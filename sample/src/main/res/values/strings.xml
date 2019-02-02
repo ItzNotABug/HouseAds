@@ -1,10 +1,14 @@
 <resources>
-    <string name="app_name">HouseAds sample</string>
-    <string name="load_ad_cached">Load Ad (Cached) without Header Image</string>
-    <string name="load_ad_fresh_fetch">Load Ad (Fresh Fetch) with Header Image</string>
-    <string name="show_interstitial">Show Interstitial</string>
-    <string name="clear_glide_cache">Clear Glide Cache</string>
-    <string name="native_ads_activity">Native Ads Activity</string>
+    <string name="app_name">HouseAds</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hide_app_if_installed">Hide app if Installed?</string>
+    <string name="use_palette">Use Palette</string>
+    <string name="show_header">Show Header</string>
+    <string name="force_refresh">Force Refresh</string>
+    <string name="show_interstitial_on_back_press">Show Interstitial on Back Press</string>
+    <string name="corner_size">25</string>
+    <string name="card_corner_radius">Card corner radius</string>
+    <string name="set_action_button_corner_radius">Action Button corner radius</string>
+    <string name="load_ad">Load Ad</string>
     <string name="load_native_ad">Load Native Ad</string>
-    <string name="serif">serif</string>
 </resources>
