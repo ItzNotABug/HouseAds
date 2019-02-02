@@ -6,11 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application>
-
-        <meta-data
-            android:name="com.lazygeniouz.house.ads.glide.HouseAdsGlideModule"
-            android:value="GlideModule" />
-
         <activity
             android:name=".HouseAdsInterstitial$InterstitialActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />

@@ -137,9 +137,9 @@ interstitial.setAdListener(new AdListener() {
 interstitial.loadAd();
 ```
             
-Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the same way - `interstitial.isAdLoaded();`
+Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the same way - `house_ads_interstitial_layout.isAdLoaded();`
 
-And show Interstitial like - `interstitial.show();`
+And show Interstitial like - `house_ads_interstitial_layout.show();`
 
 ## HouseAdsNative
 ![Screenshots](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/native.png)

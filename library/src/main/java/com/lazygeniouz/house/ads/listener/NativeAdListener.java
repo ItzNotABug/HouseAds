@@ -12,7 +12,7 @@ import android.view.View;
 public interface NativeAdListener {
 
     void onAdLoaded();
-    void onAdLoadFailed();
+    void onAdLoadFailed(Exception e);
 
     interface CallToActionListener{
         void onCallToActionClicked(View view);

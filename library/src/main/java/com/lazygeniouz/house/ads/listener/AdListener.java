@@ -8,7 +8,7 @@ package com.lazygeniouz.house.ads.listener;
 
 public interface AdListener {
 
-    void onAdLoadFailed();
+    void onAdLoadFailed(Exception e);
     void onAdLoaded();
     void onAdClosed();
     void onAdShown();

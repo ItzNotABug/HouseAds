@@ -77,6 +77,9 @@ public class DialogModal {
     }
 
     public float getRating() {
-        return Float.parseFloat(rating);
+        float val = 0;
+        if (!rating.isEmpty()) val = Float.parseFloat(rating);
+
+        return val;
     }
 }
