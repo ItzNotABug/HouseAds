@@ -1,6 +1,8 @@
 # HouseAds
 A simple Android library (currently in early stage) to cross promote your apps, sites!
-<br/>Currently includes a Dialog & Interstitial Ad fetched from a json stored on a site/server.
+<br/>Currently includes a Dialog, Interstitial & a Customizable Native Ad fetched from a json stored on a site/server.
+
+![Screenshots](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/screenshot.png)
 
 
 Primary Goal:
@@ -56,11 +58,7 @@ Json Array Schema that you'll have to put on a server:
 
 
 <br/>Some of the Assets like App Title, App Description, Icons & call to Action Text & Package Name are necessary!
-<!-- <br/>Code Examples will be added later, till then you can check Sample App!-->
-
 ## HouseAdsDialog
-![Screenshot](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/dialog1.png) ![Screenshot](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/dialog2.png)
-
 HouseAdsDialog is a Beautifully Styled Dialog which shows your Ad Assets like Header Image, App Icon, App Title & Description, Call to Action Button, Star Ratings & Price of the App.
 <br/>The library internally uses `Palette API` to color the CTA Button by fetching the `Dominant Color` from Icon or Header Bitmap, whichever available.
 
@@ -109,8 +107,6 @@ houseAds.setAdListener(new AdListener() {
 <br/>Use `HouseAdsNative` instead :)
 
 ## HouseAdsInterstitial
-![Screenshots](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/interstitial.png)
-
 HouseAds also supports Interstitial Ad support just like AdMob has one!
 <br/>HouseAdsInterstitial shows an Image fetched from your Json & navigates the User to Google Play if you specified a Package Name or the Website otherwise.
 
@@ -142,8 +138,6 @@ Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the
 And show Interstitial like - `house_ads_interstitial_layout.show();`
 
 ## HouseAdsNative
-![Screenshots](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/native.png)
-
 HouseAdsNative is the type of Ad where you can pass your own views which includes Ad Assets just like AdMob's `NativeAdvancedUnified`.
 <br/>The `setNativeAdView()` method in `HouseAdsNative` accepts two types of object to specify your View containing Ad Assets.
 * HouseAdsNativeAdView Object,
@@ -232,33 +226,3 @@ houseAdsNative.setCallToActionListener(new NativeAdListener.CallToActionListener
         });
 ```
 <br/>**Note: If you don't implement the CTAListener, default implementation is used which navigates the user to PlayStore or Website depending on the passed argument to the "app_uri" object in json, when clicked.**
-
-
-## Clearing the Cache.
-HouseAds uses Glide for Image Loading and Caching, therefore you should clear its cache periodically by calling the following method - 
-```java
-HouseAdsHelper.clearGlideCache(MainActivity.this);
-```
-
-## ProGuard
-```
--keep class org.jsoup.**
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.module.AppGlideModule
--keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
-```
-
- 
- 
- 
-
- 
- 
- 
- 
- 
- 
-             
