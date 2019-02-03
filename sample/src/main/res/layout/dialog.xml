@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/forceRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/force_refresh"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/hideIfInstalled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/hide_app_if_installed"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/usePalette"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/use_palette"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/showHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/show_header"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:text="@string/card_corner_radius"
+            tools:ignore="RelativeOverlap" />
+
+        <EditText
+            android:id="@+id/cardCorner"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/corner_size"
+            android:gravity="center"
+            android:inputType="number"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            tools:ignore="Autofill,LabelFor" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:text="@string/set_action_button_corner_radius"
+            tools:ignore="RelativeOverlap" />
+
+        <EditText
+            android:id="@+id/ctaCorner"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/corner_size"
+            android:gravity="center"
+            android:inputType="number"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            tools:ignore="Autofill,LabelFor" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="@string/load_ad"/>
+</LinearLayout>
