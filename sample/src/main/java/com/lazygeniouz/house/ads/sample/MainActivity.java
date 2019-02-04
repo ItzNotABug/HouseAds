@@ -3,10 +3,10 @@ package com.lazygeniouz.house.ads.sample;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,14 +20,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.lazygeniouz.checkoutverifier.CheckoutVerifier;
 import com.lazygeniouz.checkoutverifier.VerifyingListener;
+import com.lazygeniouz.house.ads.sample.adapter.ViewPagerAdapter;
 import com.lazygeniouz.house.ads.sample.fragments.DialogAd;
 import com.lazygeniouz.house.ads.sample.fragments.InterstitialAd;
 import com.lazygeniouz.house.ads.sample.fragments.NativeAd;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,9 +31,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,50 +45,44 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         billingProcessor = new BillingProcessor(MainActivity.this, null, new BillingProcessor.IBillingHandler() {
-            @Override
-            public void onProductPurchased(@NonNull String productId, TransactionDetails details) {
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setView(View.inflate(MainActivity.this, R.layout.verify_purchase, null))
-                        .create();
+                    @Override
+                    public void onProductPurchased(@NonNull String productId, TransactionDetails details) {
+                        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                                .setView(View.inflate(MainActivity.this, R.layout.verify_purchase, null))
+                                .create();
+                        dialog.show();
 
-                new CheckoutVerifier("https://www.lazygeniouz.com/iab-verify/houseAds/verify.php",
-                        details.purchaseInfo.responseData,
-                        details.purchaseInfo.signature,
-                        new VerifyingListener() {
-                            @Override
-                            public void onVerificationStarted() {
-                                dialog.show();
-                            }
+                        new CheckoutVerifier("https://www.lazygeniouz.com/iab-verify/houseAds/verify.php",
+                                details.purchaseInfo.responseData,
+                                details.purchaseInfo.signature,
+                                new VerifyingListener() {
+                                    @Override
+                                    public void onVerificationStarted() {
+                                        dialog.show();
+                                    }
 
-                            @Override
-                            public void onVerificationCompleted(boolean isVerified) {
-                                dialog.dismiss();
-                                if (isVerified) showSnackbar("Thank You! :)");
-                                else showSnackbar("Error! :(");
-                            }
+                                    @Override
+                                    public void onVerificationCompleted(boolean isVerified) {
+                                        dialog.dismiss();
+                                        if (isVerified) showSnackbar("Thank You! :)");
+                                        else showSnackbar("Error! :(");
 
-                            @Override
-                            public void onExceptionCaught(@NotNull Exception e) {
-                                showSnackbar("Error1 :(");
-                            }
-                        }).start();
-            }
+                                        //Consuming the Product so that
+                                        // the User can Donate as many times, he/she likes! ;)
+                                        billingProcessor.consumePurchase(productId);
+                                    }
 
-            @Override
-            public void onPurchaseHistoryRestored() {
+                                    @Override
+                                    public void onExceptionCaught(@NonNull Exception e) {
+                                        Log.d("HouseAds", e.getMessage());
+                                    }
+                                }).start();
+                    }
 
-            }
-
-            @Override
-            public void onBillingError(int errorCode, Throwable error) {
-
-            }
-
-            @Override
-            public void onBillingInitialized() {
-
-            }
-        });
+                    @Override public void onPurchaseHistoryRestored() {}
+                    @Override public void onBillingError(int errorCode, Throwable error) {}
+                    @Override public void onBillingInitialized() {}
+                });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -106,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
         donate.setOnClickListener(v -> {
-            //Show a Dialog with 3 Donations..
-            //Small = 150, Large = 500
             View donation = View.inflate(MainActivity.this, R.layout.donation, null);
             AlertDialog donateDialog = new AlertDialog.Builder(MainActivity.this)
                     .setTitle("Donate")
@@ -137,10 +122,12 @@ public class MainActivity extends AppCompatActivity {
     void showSnackbar(String msg) {
         Snackbar snackbar = Snackbar.make(findViewById(R.id.coordinator), msg, Snackbar.LENGTH_SHORT);
         View snackbarView = snackbar.getView();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) snackbarView.setBackground(new ColorDrawable(ContextCompat.getColor(MainActivity.this, R.color.colorAccent)));
-        else snackbarView.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(MainActivity.this, R.color.colorAccent)));
-        ((TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text)).setGravity(Gravity.CENTER);
-        ((TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text)).setTypeface(Typeface.SERIF, Typeface.BOLD);
+        snackbarView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+
+        TextView snackText = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        snackText.setTypeface(Typeface.SERIF, Typeface.BOLD);
+        snackText.setGravity(Gravity.CENTER);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) snackText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         snackbar.show();
     }
 
@@ -187,35 +174,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (!billingProcessor.handleActivityResult(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentName = new ArrayList<>();
-
-        ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        void addFragment(Fragment fragment, String name) {
-            mFragmentList.add(fragment);
-            mFragmentName.add(name);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentName.get(position);
-        }
     }
 }
