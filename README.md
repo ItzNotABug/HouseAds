@@ -64,8 +64,7 @@ HouseAdsDialog is a Beautifully Styled Dialog which shows your Ad Assets like He
 
 <br/>Following is an example of HouseAdsDialog -     
 ```java
-HouseAdsDialog houseAds = new HouseAdsDialog(MainActivity.this);
-houseAds.setUrl(adURL); //URL to Json File
+HouseAdsDialog houseAds = new HouseAdsDialog(MainActivity.this, adUrl);  //Context & URL to Json File.
 houseAds.hideIfAppInstalled(true); //An App's Ad won't be shown if it is Installed on the Device.
 houseAds.setCardCorners(100); // Set CardView's corner radius.
 houseAds.setCtaCorner(100); //Set CTA Button's background radius.
@@ -112,8 +111,7 @@ HouseAds also supports Interstitial Ad support just like AdMob has one!
 
 <br/>Following is an example of HouseAdsInterstitial - 
 ```java
-final HouseAdsInterstitial interstitial = new HouseAdsInterstitial(MainActivity.this);
-interstitial.setUrl(adURL);
+final HouseAdsInterstitial interstitial = new HouseAdsInterstitial(MainActivity.this, adUrl);
 interstitial.setAdListener(new AdListener() {
     @Override
     public void onAdLoadFailed() {}
@@ -133,9 +131,9 @@ interstitial.setAdListener(new AdListener() {
 interstitial.loadAd();
 ```
             
-Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the same way - `house_ads_interstitial_layout.isAdLoaded();`
+Just like the HouseAdsDialog, you can check if the Interstitial is Loaded in the same way - `interstitial.isAdLoaded();`
 
-And show Interstitial like - `house_ads_interstitial_layout.show();`
+And show Interstitial like - `interstitial.show();`
 
 ## HouseAdsNative
 HouseAdsNative is the type of Ad where you can pass your own views which includes Ad Assets just like AdMob's `NativeAdvancedUnified`.
@@ -198,10 +196,9 @@ You can also pass a View in the `setNativeAdView()`, however there are some rule
 
 #### Loading HouseAdsNative
 ```java
-HouseAdsNative houseAdsNative = new HouseAdsNative(NativeAdActivity.this);
+HouseAdsNative houseAdsNative = new HouseAdsNative(NativeAdActivity.this, adUrl);
 houseAdsNative.setNativeAdView(nativeView); //HouseAdsNativeView Object
 houseAdsNative.setNativeNativeView(adLayout); //View Object
-houseAdsNative.setUrl(adUrl);
 houseAdsNative.setNativeAdListener(new NativeAdListener() {            
     @Override
     public void onAdLoaded() {
