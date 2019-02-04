@@ -6,7 +6,6 @@
 
 package com.lazygeniouz.house.ads;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -68,7 +67,6 @@ public class HouseAdsInterstitial {
         return isAdLoaded;
     }
 
-    @SuppressLint("CheckResult")
     private void setUp(String val) {
         ArrayList<InterstitialModal> modalArrayList = new ArrayList<>();
         String x = new String(new StringBuilder().append(val));
