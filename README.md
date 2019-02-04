@@ -14,7 +14,7 @@ Primary Goal:
 <br/>Adding HouseAds in your App - 
 ```gradle
 dependencies {
-    implementation 'com.lazygeniouz:houseAds:1.3'
+    implementation 'com.lazygeniouz:houseAds:1.4'
 }
 ```
 
