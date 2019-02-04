@@ -8,5 +8,5 @@
 /build
 /captures
 /sample/keystore.jks
-/sample/logo.pnh
+/sample/logo.png
 .externalNativeBuild
