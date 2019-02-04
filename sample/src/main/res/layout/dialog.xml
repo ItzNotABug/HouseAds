@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    android:animateLayoutChanges="true">
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/forceRefresh"
@@ -112,10 +113,23 @@
             tools:ignore="Autofill,LabelFor" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/load"
+    <TextView
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/loading"
+        android:visibility="gone"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/load"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="@string/load_ad"/>
+        android:padding="10dp"
+        android:text="@string/load_ad"
+        app:cornerRadius="20dp"
+        app:backgroundTint="@color/colorAccent"
+        android:textColor="#fff"
+        android:theme="@style/Theme.MaterialComponents"/>
 </LinearLayout>

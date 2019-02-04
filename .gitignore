@@ -7,4 +7,6 @@
 .DS_Store
 /build
 /captures
+/sample/keystore.jks
+/sample/logo.pnh
 .externalNativeBuild

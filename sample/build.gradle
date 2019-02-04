@@ -1,8 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'houseAds'
+            keyPassword '14310298'
+            storeFile file('C:/Users/HP/AndroidStudioProjects/HouseAds/sample/keystore.jks')
+            storePassword '14310298'
+        }
+    }
     compileSdkVersion 28
-
     defaultConfig {
         applicationId "com.lazygeniouz.house.ads.sample"
         minSdkVersion 14
@@ -11,25 +18,29 @@ android {
         versionName "1.0"
 
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
 
+repositories {
+    mavenCentral()
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
     implementation 'com.google.android.material:material:1.1.0-alpha03'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation project(":library")
+    implementation 'com.lazygeniouz:checkout-verifier:1.0'
+    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
+    implementation project(':library')
 }

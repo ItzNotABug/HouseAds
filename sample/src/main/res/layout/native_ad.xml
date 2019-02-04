@@ -101,12 +101,25 @@
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
-    <Button
-        android:id="@+id/load"
-        android:layout_margin="10dp"
+    <TextView
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/loading"
+        android:visibility="gone"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/load"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
         android:text="@string/load_native_ad"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        app:cornerRadius="20dp"
+        app:backgroundTint="@color/colorAccent"
+        android:textColor="#fff"
+        android:theme="@style/Theme.MaterialComponents"/>
 
 </LinearLayout>

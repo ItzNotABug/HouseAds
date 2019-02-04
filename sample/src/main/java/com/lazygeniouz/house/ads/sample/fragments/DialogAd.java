@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.lazygeniouz.house.ads.HouseAdsDialog;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.sample.R;
@@ -26,6 +26,7 @@ public class DialogAd extends Fragment implements AdListener {
     private SwitchCompat hideHeader;
     private EditText cardCorner, ctaCorner;
     private HouseAdsDialog dialog;
+    private TextView loading;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class DialogAd extends Fragment implements AdListener {
         hideHeader = rootView.findViewById(R.id.showHeader);
         cardCorner = rootView.findViewById(R.id.cardCorner);
         ctaCorner = rootView.findViewById(R.id.ctaCorner);
+        loading = rootView.findViewById(R.id.loading);
 
         forceRefresh.setChecked(getContext().getSharedPreferences("forceRefresh", Context.MODE_PRIVATE).getBoolean("val", false));
         forceRefresh.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -51,8 +53,9 @@ public class DialogAd extends Fragment implements AdListener {
             getActivity().recreate();
         });
 
-        Button loadAds = rootView.findViewById(R.id.load);
+        MaterialButton loadAds = rootView.findViewById(R.id.load);
         loadAds.setOnClickListener(v -> {
+            loading.setVisibility(View.VISIBLE);
             dialog.hideIfAppInstalled(hideIfAppInstalled.isChecked());
             dialog.usePalette(usePalette.isChecked());
             dialog.showHeaderIfAvailable(hideHeader.isChecked());
@@ -66,7 +69,8 @@ public class DialogAd extends Fragment implements AdListener {
 
     @Override
     public void onAdLoadFailed(Exception e) {
-        Toast.makeText(getContext(), "Ad failed to Load.. \nReason: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        loading.setVisibility(View.GONE);
+        Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -81,6 +85,7 @@ public class DialogAd extends Fragment implements AdListener {
 
     @Override
     public void onAdShown() {
+        loading.setVisibility(View.GONE);
         Toast.makeText(getContext(), "Ad Shown", Toast.LENGTH_SHORT).show();
     }
 
