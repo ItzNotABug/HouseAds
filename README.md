@@ -4,7 +4,7 @@ A simple Android library (currently in early stage) to cross promote your apps, 
 
 ![Screenshot](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/screenshot.png)
 <br/>Check out the Sample from Google Play -
-<a href='https://play.google.com/store/apps/details?id=com.lazygeniouz.house.ads.sample&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+<a href='https://play.google.com/store/apps/details?id=com.lazygeniouz.house.ads.sample&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="90px"/></a>
 
 Primary Goal:
 <br/>To keep it Simple & including Ads support like AdMob's Ad (Native, Interstitial)
