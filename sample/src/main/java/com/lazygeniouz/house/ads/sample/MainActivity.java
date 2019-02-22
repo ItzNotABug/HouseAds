@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                                         else showSnackbar("Error! :(");
 
                                         //Consuming the Product so that
-                                        // the User can Donate as many times, he/she likes! ;)
+                                        // the User can Donate as many times as he/she likes! ;)
                                         billingProcessor.consumePurchase(productId);
                                     }
 
