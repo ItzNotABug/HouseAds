@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RemoveJsonObjectCompat extends AsyncTask<JSONArray, JSONArray, JSONArray> {
-    private JSONArray jsonArray;
-    private int index;
+    private final JSONArray jsonArray;
+    private final int index;
 
     public RemoveJsonObjectCompat(int index, JSONArray array) {
         this.jsonArray = array;

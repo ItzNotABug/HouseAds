@@ -4,9 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -15,6 +13,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.palette.graphics.Palette;
 
 import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
 import com.lazygeniouz.house.ads.helper.JsonPullerTask;
@@ -31,15 +35,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.palette.graphics.Palette;
-
 public class HouseAdsDialog {
     private final Context mCompatActivity;
-    private String jsonUrl;
+    private final String jsonUrl;
     private String jsonRawResponse = "";
 
     private boolean showHeader = true;
@@ -243,7 +241,7 @@ public class HouseAdsDialog {
             builder.setView(view);
             dialog = builder.create();
             //noinspection ConstantConditions
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.setOnShowListener(dialogInterface -> {
                 if (mAdListener != null) mAdListener.onAdShown();
             });

@@ -17,6 +17,10 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.AnimRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.lazygeniouz.house.ads.helper.JsonPullerTask;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.modal.InterstitialModal;
@@ -28,14 +32,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import androidx.annotation.AnimRes;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 public class HouseAdsInterstitial {
     private final Context mContext;
     private static AdListener mAdListener;
-    private String url;
+    private final String url;
     private int lastLoaded = 0;
 
     private static boolean isAdLoaded = false;

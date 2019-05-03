@@ -13,6 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,14 +32,6 @@ import com.lazygeniouz.house.ads.sample.adapter.ViewPagerAdapter;
 import com.lazygeniouz.house.ads.sample.fragments.DialogAd;
 import com.lazygeniouz.house.ads.sample.fragments.InterstitialAd;
 import com.lazygeniouz.house.ads.sample.fragments.NativeAd;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void showSnackbar(String msg) {
+    private void showSnackbar(String msg) {
         Snackbar snackbar = Snackbar.make(findViewById(R.id.coordinator), msg, Snackbar.LENGTH_SHORT);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
@@ -161,10 +161,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.git:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/itznotabug/houseAds")));
-                return true;
+        if (item.getItemId() == R.id.git) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/itznotabug/houseAds")));
+            return true;
         }
         return true;
     }

@@ -22,6 +22,10 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.palette.graphics.Palette;
+
 import com.lazygeniouz.house.ads.helper.HouseAdsHelper;
 import com.lazygeniouz.house.ads.helper.JsonPullerTask;
 import com.lazygeniouz.house.ads.helper.RemoveJsonObjectCompat;
@@ -38,14 +42,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.palette.graphics.Palette;
-
 @SuppressWarnings("unused")
 public class HouseAdsNative {
     private final Context mContext;
-    private String jsonUrl;
+    private final String jsonUrl;
 
     private boolean usePalette = true;
     private boolean isAdLoaded = false;

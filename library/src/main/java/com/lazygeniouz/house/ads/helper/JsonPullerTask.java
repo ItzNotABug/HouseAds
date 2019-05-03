@@ -10,8 +10,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class JsonPullerTask extends AsyncTask<String, String, String> {
-    private String jsonUrl;
-    private JsonPullerListener listener;
+    private final String jsonUrl;
+    private final JsonPullerListener listener;
 
     public JsonPullerTask(String url, JsonPullerListener jsonPullerListener) {
         this.jsonUrl = url;

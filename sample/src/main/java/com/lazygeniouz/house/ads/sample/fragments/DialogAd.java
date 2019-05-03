@@ -9,14 +9,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.button.MaterialButton;
 import com.lazygeniouz.house.ads.HouseAdsDialog;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.sample.R;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.Fragment;
 
 public class DialogAd extends Fragment implements AdListener {
     public DialogAd() {}
@@ -47,7 +47,6 @@ public class DialogAd extends Fragment implements AdListener {
 
         forceRefresh.setChecked(getContext().getSharedPreferences("forceRefresh", Context.MODE_PRIVATE).getBoolean("val", false));
         forceRefresh.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //noinspection ConstantConditions
             getContext().getSharedPreferences("forceRefresh", Context.MODE_PRIVATE).edit().putBoolean("val", isChecked).apply();
             //noinspection ConstantConditions
             getActivity().recreate();

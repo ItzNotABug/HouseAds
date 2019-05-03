@@ -5,7 +5,8 @@
     <string name="use_palette">Use Palette</string>
     <string name="show_header">Show Header</string>
     <string name="force_refresh">Force Refresh</string>
-    <string name="corner_size">25</string>
+    <string name="card_corner_size">50</string>
+    <string name="cta_corner_size">50</string>
     <string name="card_corner_radius">Card corner radius</string>
     <string name="set_action_button_corner_radius">Action Button corner radius</string>
     <string name="load_ad">Load Ad</string>
@@ -18,5 +19,6 @@
     <string name="ad_loading">Ad Loading…</string>
     <string name="press_back">Press Back</string>
     <string name="small_donation">Small Donation</string>
+    <string name="serif">serif</string>
     <string name="donation_text"><![CDATA[This Library was build & is maintained by one person. \nDonations are much appreciated & encourage continued support.]]></string>
 </resources>

@@ -10,18 +10,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.button.MaterialButton;
-import com.lazygeniouz.house.ads.HouseAdsInterstitial;
-import com.lazygeniouz.house.ads.listener.AdListener;
-import com.lazygeniouz.house.ads.sample.R;
-import com.lazygeniouz.house.ads.sample.listener.BackPressListener;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.button.MaterialButton;
+import com.lazygeniouz.house.ads.HouseAdsInterstitial;
+import com.lazygeniouz.house.ads.listener.AdListener;
+import com.lazygeniouz.house.ads.sample.R;
+import com.lazygeniouz.house.ads.sample.listener.BackPressListener;
 
 
 public class InterstitialAd extends Fragment implements AdListener, BackPressListener {
