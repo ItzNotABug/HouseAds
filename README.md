@@ -8,16 +8,26 @@ A simple Android library (currently in early stage) to cross promote your apps, 
 <br/><a href='https://play.google.com/store/apps/details?id=com.lazygeniouz.house.ads.sample&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="90px"/></a>
 
 Primary Goal:
-<br/>To keep it Simple & including Ads support like AdMob's Ad (Native, Interstitial)
+<br/>To keep it Simple & including Ads support like AdMob's Ad (Native, Interstitial, Dialog)
 <br/>No!, No Banners!
 
-## Gradle
-[![Download](https://api.bintray.com/packages/itznotabug/Maven/houseAds/images/download.svg) ](https://bintray.com/itznotabug/Maven/houseAds/_latestVersion)
-<br/>Adding HouseAds in your App - 
+## Add Library to Project
+Adding HouseAds in your App - 
+#### Gradle
 ```gradle
 dependencies {
     implementation 'com.lazygeniouz:houseAds:1.4'
 }
+```
+
+#### Maven
+```maven
+<dependency>
+	<groupId>com.lazygeniouz</groupId>
+	<artifactId>houseAds</artifactId>
+	<version>1.4</version>
+	<type>pom</type>
+</dependency>
 ```
 
 ## Json Array Schema
