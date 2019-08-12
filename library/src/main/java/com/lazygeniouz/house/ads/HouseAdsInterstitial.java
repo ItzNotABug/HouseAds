@@ -93,6 +93,9 @@ public class HouseAdsInterstitial {
             if (lastLoaded == modalArrayList.size() - 1) lastLoaded = 0;
             else lastLoaded++;
 
+            if (modal.getInterstitialImageUrl().isEmpty() || !modal.getInterstitialImageUrl().startsWith("http"))
+                throw new IllegalArgumentException("Interstitial Image URL should not be Null or Blank & should either start with 'http' or '/'");
+
             Picasso.get().load(modal.getInterstitialImageUrl()).into(new com.squareup.picasso.Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {

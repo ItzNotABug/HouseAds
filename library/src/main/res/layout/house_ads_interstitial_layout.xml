@@ -15,9 +15,11 @@
 
     <ImageButton
         android:id="@+id/button_close"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:src="@drawable/close"
+        android:layout_margin="8dp"
+        android:background="@drawable/interstitial_cancel_button_shape"
         android:contentDescription="@string/close_button" />
 
 </RelativeLayout>

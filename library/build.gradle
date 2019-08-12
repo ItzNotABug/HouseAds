@@ -4,6 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         minSdkVersion 14
+        //noinspection OldTargetApi
         targetSdkVersion 28
         versionCode 106
         versionName "1.6"
@@ -23,11 +24,11 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'org.jsoup:jsoup:1.12.1'
 }
 
 apply from: '../install.gradle'

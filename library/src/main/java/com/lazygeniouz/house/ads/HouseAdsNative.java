@@ -1,7 +1,7 @@
 /*
  * Created by Darshan Pandya.
  * @itznotabug
- * Copyright (c) 2018.
+ * Copyright (c) 2019.
  */
 
 package com.lazygeniouz.house.ads;
@@ -278,6 +278,5 @@ public class HouseAdsNative {
                 });
             }
         }
-
     }
 }

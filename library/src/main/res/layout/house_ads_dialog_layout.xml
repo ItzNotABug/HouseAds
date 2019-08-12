@@ -97,9 +97,8 @@
             android:layout_marginLeft="20dp"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:background="@drawable/button_bg"
+            android:background="@drawable/dialog_cta_button_background"
             android:textSize="12sp" />
-
 
 </RelativeLayout>
 </androidx.cardview.widget.CardView>
