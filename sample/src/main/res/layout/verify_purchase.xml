@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="15dip">
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="45dip"
+        android:layout_height="40dip"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="15dip"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dip"
+        android:indeterminate="true"
+        app:backgroundTint="@color/colorAccent"/>
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please wait a moment..."
+        android:layout_toRightOf="@id/progress"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:textSize="15sp"
+        android:layout_toEndOf="@id/progress"
+        android:layout_marginStart="20dp"
+        tools:ignore="HardcodedText" />
+
+</RelativeLayout>

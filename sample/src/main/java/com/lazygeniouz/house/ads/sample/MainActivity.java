@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
 
                                     @Override
-                                    public void onVerificationCompleted(boolean isVerified) {
+                                    public void onVerificationCompleted(Boolean isVerified) {
                                         dialog.dismiss();
                                         if (isVerified) showSnackbar("Thank You! :)");
                                         else showSnackbar("Error! :(");

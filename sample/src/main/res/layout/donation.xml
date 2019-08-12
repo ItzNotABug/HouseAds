@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:gravity="center"
+    android:layout_gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textSize="17sp"
+        android:text="@string/donation_text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/small"
+            android:textColor="#fff"
+            app:backgroundTint="@color/colorAccent"
+            app:cornerRadius="10dp"
+            android:layout_margin="10dp"
+            android:theme="@style/Theme.MaterialComponents"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/medium"
+            android:textColor="#fff"
+            app:backgroundTint="@color/colorAccent"
+            app:cornerRadius="10dp"
+            android:layout_margin="10dp"
+            android:theme="@style/Theme.MaterialComponents"/>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/large"
+        android:textColor="#fff"
+        app:backgroundTint="@color/colorAccent"
+        app:cornerRadius="10dp"
+        android:theme="@style/Theme.MaterialComponents"/>
+</LinearLayout>

@@ -26,7 +26,7 @@ public class NativeAd extends Fragment {
 
         rootView.findViewById(R.id.card_view).setVisibility(View.GONE);
         TextView loading = rootView.findViewById(R.id.loading);
-        HouseAdsNative houseAdsNative = new HouseAdsNative(getContext(), "https://www.lazygeniouz.com/houseAds/ads.json");
+        HouseAdsNative houseAdsNative = new HouseAdsNative(getContext(), "https://lz-houseads.firebaseapp.com/houseAds/ads.json");
         houseAdsNative.setNativeAdView(rootView.findViewById(R.id.card_view));
         houseAdsNative.usePalette(true);
         houseAdsNative.setNativeAdListener(new NativeAdListener() {

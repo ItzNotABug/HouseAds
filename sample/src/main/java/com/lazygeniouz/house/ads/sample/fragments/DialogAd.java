@@ -32,7 +32,7 @@ public class DialogAd extends Fragment implements AdListener {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.dialog, container, false);
 
-        dialog = new HouseAdsDialog(getContext(), "https://www.lazygeniouz.com/houseAds/ads.json");
+        dialog = new HouseAdsDialog(getContext(), "https://lz-houseads.firebaseapp.com/houseAds/ads.json");
         dialog.setAdListener(this);
         //noinspection ConstantConditions
         dialog.setForceLoadFresh(getContext().getSharedPreferences("forceRefresh", Context.MODE_PRIVATE).getBoolean("val", false));

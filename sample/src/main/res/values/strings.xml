@@ -21,4 +21,7 @@
     <string name="small_donation">Small Donation</string>
     <string name="serif">serif</string>
     <string name="donation_text"><![CDATA[This Library was build & is maintained by one person. \nDonations are much appreciated & encourage continued support.]]></string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
 </resources>

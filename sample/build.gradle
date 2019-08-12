@@ -13,6 +13,7 @@ android {
     defaultConfig {
         applicationId "com.lazygeniouz.house.ads.sample"
         minSdkVersion 14
+        //noinspection OldTargetApi
         targetSdkVersion 28
         versionCode 106
         versionName "1.6"
@@ -38,10 +39,10 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
-    implementation 'com.google.android.material:material:1.1.0-alpha05'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.lazygeniouz:checkout-verifier:1.2'
+    implementation 'com.lazygeniouz:checkout-verifier:1.4'
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
     implementation project(':library')
 }
