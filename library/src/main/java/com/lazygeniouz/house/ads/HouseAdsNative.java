@@ -1,9 +1,3 @@
-/*
- * Created by Darshan Pandya.
- * @itznotabug
- * Copyright (c) 2019.
- */
-
 package com.lazygeniouz.house.ads;
 
 import android.content.ActivityNotFoundException;

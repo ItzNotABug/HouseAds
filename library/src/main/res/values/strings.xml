@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="header_image">Header Image</string>
-    <string name="interstitial_image">interstitial_image</string>
+    <string name="interstitial_image">Interstitial Image</string>
     <string name="close_button">Close</string>
 </resources>

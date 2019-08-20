@@ -1,7 +1,7 @@
 /*
  * Created by Darshan Pandya.
  * @itznotabug
- * Copyright (c) 2018.
+ * Copyright (c) 2019.
  */
 
 apply plugin: 'com.github.dcendents.android-maven'
@@ -37,7 +37,6 @@ install {
                     connection 'https://github.com/ItzNotABug/HouseAds.git' // YOUR GIT REPO
                     developerConnection 'https://github.com/ItzNotABug/HouseAds.git' // YOUR GIT REPO
                     url 'https://github.com/ItzNotABug/HouseAds' // YOUR SITE
-
                 }
             }
         }
