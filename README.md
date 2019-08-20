@@ -16,7 +16,7 @@ Adding HouseAds in your App -
 #### Gradle
 ```gradle
 dependencies {
-    implementation 'com.lazygeniouz:houseAds:1.4'
+    implementation 'com.lazygeniouz:houseAds:1.6'
 }
 ```
 
@@ -25,7 +25,7 @@ dependencies {
 <dependency>
 	<groupId>com.lazygeniouz</groupId>
 	<artifactId>houseAds</artifactId>
-	<version>1.4</version>
+	<version>1.6</version>
 	<type>pom</type>
 </dependency>
 ```

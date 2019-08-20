@@ -15,8 +15,8 @@ android {
         minSdkVersion 14
         //noinspection OldTargetApi
         targetSdkVersion 28
-        versionCode 106
-        versionName "1.6"
+        versionCode 108
+        versionName "1.8"
 
     }
     buildTypes {
@@ -44,5 +44,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.lazygeniouz:checkout-verifier:1.4'
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
-    implementation project(':library')
+    implementation 'com.lazygeniouz:houseAds:1.6'
+    //implementation project(':library')
 }
