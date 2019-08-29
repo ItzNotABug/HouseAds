@@ -12,7 +12,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.lazygeniouz.house.ads.sample"
-        minSdkVersion 14
+        minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 28
         versionCode 108
@@ -44,6 +44,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.lazygeniouz:checkout-verifier:1.4'
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
-    implementation 'com.lazygeniouz:houseAds:1.6'
-    //implementation project(':library')
+    //implementation 'com.lazygeniouz:houseAds:1.6'
+    implementation project(':library')
 }
