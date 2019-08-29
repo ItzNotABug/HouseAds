@@ -235,3 +235,7 @@ houseAdsNative.setCallToActionListener(new NativeAdListener.CallToActionListener
         });
 ```
 <br/>**Note: If you don't implement the CTAListener, default implementation is used which navigates the user to PlayStore or Website depending on the passed argument to the "app_uri" object in json, when clicked.**
+
+<br/>
+<br/>
+###Support by Starring the Library 😁
