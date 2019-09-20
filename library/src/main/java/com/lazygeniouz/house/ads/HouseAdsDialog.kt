@@ -247,10 +247,7 @@ class HouseAdsDialog(private val context: Context, private val jsonUrl: String) 
             })
 
             if (largeImageUrl.trim().isNotEmpty() && showHeader) {
-                val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) {
-                    val drawableName = largeImageUrl.substringAfterLast("/")
-                    getDrawableUriAsString(context, drawableName)!!
-                }
+                val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) getDrawableUriAsString(context, largeImageUrl)!!
                 else largeImageUrl
 
                 Picasso.get().load(largeImageUrlToLoad).into(object : Target {
