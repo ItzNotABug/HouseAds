@@ -14,10 +14,16 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.annotation.AnimRes
+import androidx.annotation.RawRes
 import androidx.appcompat.app.AppCompatActivity
+import com.lazygeniouz.house.ads.extension.hasDrawableSign
+import com.lazygeniouz.house.ads.extension.hasHttpSign
+import com.lazygeniouz.house.ads.helper.HouseAdsHelper
+import com.lazygeniouz.house.ads.helper.HouseAdsHelper.getJsonFromRaw
 import com.lazygeniouz.house.ads.helper.JsonPullerTask
 import com.lazygeniouz.house.ads.listener.AdListener
 import com.lazygeniouz.house.ads.modal.InterstitialModal
@@ -26,37 +32,53 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
-@Suppress("unused")
 class HouseAdsInterstitial(private val context: Context, private val jsonUrl: String) {
-    
-    private var lastLoaded = 0
-    fun setAdListener(adListener: AdListener) {
-        mAdListener = adListener
+
+    private var isUsingRawRes = false
+    private var jsonRawResponse = ""
+    private var jsonLocalRawResponse = ""
+
+    constructor(context: Context, @RawRes rawFile: Int) : this(context, "") {
+        isUsingRawRes = true
+        jsonLocalRawResponse = getJsonFromRaw(context, rawFile)
     }
 
-    fun loadAd() {
-        require(jsonUrl.trim { it <= ' ' }.isNotEmpty()) { "Url is Blank!" }
-        JsonPullerTask(jsonUrl, object : JsonPullerTask.JsonPullerListener {
-            override fun onPostExecute(result: String) {
-                if (result.trim { it <= ' ' }.isNotEmpty()) setUp(result)
-                else {
-                    mAdListener?.onAdLoadFailed(Exception("Null Response"))
-                }
-            }
+    fun setAdListener(adListener: AdListener): HouseAdsInterstitial {
+        mAdListener = adListener
+        return this
+    }
 
-        }).execute()
+    fun loadAd(): HouseAdsInterstitial {
+        if (!isUsingRawRes) {
+            require(jsonUrl.trim().isNotEmpty()) { context.getString(R.string.error_url_blank) }
+            if (jsonRawResponse.isEmpty()) {
+                JsonPullerTask(jsonUrl, object : JsonPullerTask.JsonPullerListener {
+                    override fun onPostExecute(result: String) {
+                        if (result.trim().isNotEmpty()) {
+                            jsonRawResponse = result
+                            configureAds(result)
+                        }
+                        else {
+                            mAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
+                        }
+                    }
+
+                }).execute()
+            }
+            else configureAds(jsonRawResponse)
+        } else configureAds(jsonLocalRawResponse)
+        return this
     }
 
     fun isAdLoaded(): Boolean {
         return isAdLoaded
     }
 
-    private fun setUp(jsonResponse: String) {
+    private fun configureAds(jsonResponse: String) {
         val modalArrayList = ArrayList<InterstitialModal>()
-        val appendedString = String(StringBuilder().append(jsonResponse))
 
         try {
-            val rootObject = JSONObject(appendedString)
+            val rootObject = JSONObject(jsonResponse)
             val array = rootObject.optJSONArray("apps")
 
             for (childObject in 0 until array.length()) {
@@ -74,16 +96,27 @@ class HouseAdsInterstitial(private val context: Context, private val jsonUrl: St
             jsonException.printStackTrace()
         }
 
+
+        val modal = modalArrayList[lastLoaded]
         if (modalArrayList.size > 0) {
-            val modal = modalArrayList[lastLoaded]
-            if (lastLoaded == modalArrayList.size - 1)
-                lastLoaded = 0
-            else
-                lastLoaded++
+            if (lastLoaded == modalArrayList.size - 1) lastLoaded = 0
+            else lastLoaded++
 
-            require(!(modal.interstitialImageUrl.isEmpty() || !modal.interstitialImageUrl.startsWith("http"))) { "Interstitial Image URL should not be Null or Blank & should start with 'http'" }
+            if (!isUsingRawRes) {
+                require(!(modal.interstitialImageUrl.isEmpty() || !modal.interstitialImageUrl.hasHttpSign)) { context.getString(R.string.error_interstitial_image_url_null) }
+            } else {
+                when {
+                    modal.interstitialImageUrl.trim().hasHttpSign -> Log.d(TAG, "ImageUrl starts with `http://`")
+                    modal.interstitialImageUrl.trim().hasDrawableSign -> Log.d(TAG, "ImageUrl is a local drawable")
+                    else -> throw IllegalArgumentException(context.getString(R.string.error_raw_resource_interstitial_image_null))
+                }
+            }
 
-            Picasso.get().load(modal.interstitialImageUrl).into(object : com.squareup.picasso.Target {
+            val imageUrlToLoad: String = if (modal.interstitialImageUrl.hasDrawableSign) {
+                HouseAdsHelper.getDrawableUriAsString(context, modal.interstitialImageUrl)!!
+            } else modal.interstitialImageUrl
+
+            Picasso.get().load(imageUrlToLoad).into(object : com.squareup.picasso.Target {
                 override fun onBitmapLoaded(resource: Bitmap, from: Picasso.LoadedFrom) {
                     bitmap = resource
                     mAdListener?.onAdLoaded()
@@ -101,15 +134,18 @@ class HouseAdsInterstitial(private val context: Context, private val jsonUrl: St
         }
     }
 
-    fun show() {
+    fun show(): HouseAdsInterstitial {
         context.startActivity(Intent(context, InterstitialActivity::class.java))
         if (context is AppCompatActivity) context.overridePendingTransition(0, 0)
+        return this
     }
 
 
-    fun show(@AnimRes enterAnim: Int, @AnimRes exitAnim: Int) {
+    @Suppress("unused")
+    fun show(@AnimRes enterAnim: Int, @AnimRes exitAnim: Int): HouseAdsInterstitial {
         context.startActivity(Intent(context, InterstitialActivity::class.java))
         if (context is AppCompatActivity) context.overridePendingTransition(enterAnim, exitAnim)
+        return this
     }
 
     class InterstitialActivity : Activity() {
@@ -124,7 +160,7 @@ class HouseAdsInterstitial(private val context: Context, private val jsonUrl: St
             imageView.setImageBitmap(bitmap)
             imageView.setOnClickListener {
                 isAdLoaded = false
-                if (packageName!!.startsWith("http")) {
+                if (packageName!!.hasHttpSign) {
                     val packageIntent = Intent(Intent.ACTION_VIEW, Uri.parse(packageName))
                     packageIntent.setPackage("com.android.chrome")
                     if (packageIntent.resolveActivity(packageManager) != null)
@@ -159,10 +195,12 @@ class HouseAdsInterstitial(private val context: Context, private val jsonUrl: St
         }
     }
 
-    companion object {
+    private companion object {
+        private var lastLoaded = 0
         private var mAdListener: AdListener? = null
         private var isAdLoaded = false
         private var bitmap: Bitmap? = null
         private var packageName: String? = null
+        private val TAG = HouseAdsInterstitial::class.java.simpleName.toString()
     }
 }

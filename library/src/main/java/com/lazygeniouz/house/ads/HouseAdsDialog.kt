@@ -9,17 +9,22 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.annotation.RawRes
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.palette.graphics.Palette
+import com.lazygeniouz.house.ads.extension.hasDrawableSign
+import com.lazygeniouz.house.ads.extension.hasHttpSign
 import com.lazygeniouz.house.ads.helper.HouseAdsHelper
+import com.lazygeniouz.house.ads.helper.HouseAdsHelper.getDrawableUriAsString
 import com.lazygeniouz.house.ads.helper.JsonPullerTask
 import com.lazygeniouz.house.ads.helper.RemoveJsonObjectCompat
 import com.lazygeniouz.house.ads.listener.AdListener
@@ -31,74 +36,93 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
-@Suppress("unused")
 class HouseAdsDialog(private val context: Context, private val jsonUrl: String) {
 
     private var jsonRawResponse = ""
+    private var jsonLocalRawResponse = ""
     private var showHeader = true
-    private var forceLoadFresh = true
     private var hideIfAppInstalled = true
     private var usePalette = true
     private var cardCorner = 25
     private var callToActionButtonCorner = 25
 
+    private var lastLoaded = 0
+    private var isAdLoaded = false
+    private var isUsingRawRes = false
+
     private var mAdListener: AdListener? = null
     private var dialog: AlertDialog? = null
 
-    fun showHeaderIfAvailable(showHeader: Boolean) {
+    constructor(context: Context, @RawRes rawFile: Int) : this(context, "") {
+        isUsingRawRes = true
+        jsonLocalRawResponse = HouseAdsHelper.getJsonFromRaw(context, rawFile)
+    }
+
+    fun showHeaderIfAvailable(showHeader: Boolean): HouseAdsDialog {
         this.showHeader = showHeader
+        return this
     }
 
-    fun setCardCorners(corners: Int) {
+    fun setCardCorners(corners: Int): HouseAdsDialog {
         this.cardCorner = corners
+        return this
     }
 
-    fun setCtaCorner(corner: Int) {
+    fun setCtaCorner(corner: Int): HouseAdsDialog {
         this.callToActionButtonCorner = corner
+        return this
     }
 
-    fun setForceLoadFresh(forceLoad: Boolean) {
-        this.forceLoadFresh = forceLoad
-    }
-
-    fun setAdListener(listener: AdListener) {
+    fun setAdListener(listener: AdListener): HouseAdsDialog {
         this.mAdListener = listener
+        return this
     }
 
+    @Suppress("unused")
     fun isAdLoaded(): Boolean {
         return isAdLoaded
     }
 
-    fun hideIfAppInstalled(hide: Boolean) {
+    fun hideIfAppInstalled(hide: Boolean): HouseAdsDialog {
         this.hideIfAppInstalled = hide
+        return this
     }
 
-    fun usePalette(usePalette: Boolean) {
+    fun usePalette(usePalette: Boolean): HouseAdsDialog {
         this.usePalette = usePalette
+        return this
     }
 
-    fun loadAds() {
+    fun loadAds(): HouseAdsDialog {
         isAdLoaded = false
-        require(jsonUrl.trim { it <= ' ' }.isNotEmpty()) { "Url is Blank!" }
-        if (forceLoadFresh || jsonRawResponse.isEmpty())
-            JsonPullerTask(jsonUrl, object : JsonPullerTask.JsonPullerListener {
-                override fun onPostExecute(result: String) {
-                    if (result.trim { it <= ' ' }.isNotEmpty()) setUp(result)
-                    else {
-                        mAdListener?.onAdLoadFailed(Exception("Null Response"))
+        if (!isUsingRawRes) {
+            require(jsonUrl.trim().isNotEmpty()) { context.getString(R.string.error_url_blank) }
+            if (jsonRawResponse.isEmpty()) {
+                JsonPullerTask(jsonUrl, object : JsonPullerTask.JsonPullerListener {
+                    override fun onPostExecute(result: String) {
+                        if (result.trim().isNotEmpty()) {
+                            jsonRawResponse = result
+                            configureAds(result)
+                        }
+                        else {
+                            mAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
+                        }
                     }
-                }
 
-            }).execute()
-
-        if (!forceLoadFresh && jsonRawResponse.trim { it <= ' ' }.isNotEmpty()) setUp(jsonRawResponse)
+                }).execute()
+            }
+            else configureAds(jsonRawResponse)
+        }
+        else configureAds(jsonLocalRawResponse)
+        return this
     }
 
-    fun showAd() {
+    fun showAd(): HouseAdsDialog {
         if (dialog != null) dialog!!.show()
+        return this
     }
 
-    private fun setUp(response: String) {
+    private fun configureAds(response: String) {
         val builder = AlertDialog.Builder(context)
         val dialogModalList = ArrayList<DialogModal>()
 
@@ -109,7 +133,7 @@ class HouseAdsDialog(private val context: Context, private val jsonUrl: String) 
             for (childObject in 0 until jsonArray.length()) {
                 val jsonObject = jsonArray.getJSONObject(childObject)
 
-                if (hideIfAppInstalled && !jsonObject.optString("app_uri").startsWith("http") && HouseAdsHelper.isAppInstalled(context, jsonObject.optString("app_uri"))) {
+                if (hideIfAppInstalled && !jsonObject.optString("app_uri").hasHttpSign && HouseAdsHelper.isAppInstalled(context, jsonObject.optString("app_uri"))) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) jsonArray.remove(childObject)
                     else RemoveJsonObjectCompat(childObject, jsonArray).execute()
                 } else {
@@ -140,19 +164,40 @@ class HouseAdsDialog(private val context: Context, private val jsonUrl: String) 
             else lastLoaded++
 
             val view = View.inflate(context, R.layout.house_ads_dialog_layout, null)
+            val iconUrl = dialogModal.iconUrl!!
+            val largeImageUrl = dialogModal.largeImageUrl!!
+            val appTitle = dialogModal.appTitle!!
+            val appDescription = dialogModal.appDesc!!
 
-            require(!(dialogModal.iconUrl!!.trim { it <= ' ' }.isEmpty() || !dialogModal.iconUrl!!.trim { it <= ' ' }.startsWith("http"))) {
-                "Icon URL should not be Null or Blank & should start with \"http\""
+            if (!isUsingRawRes) {
+                require(!(iconUrl.trim().isEmpty() || !iconUrl.trim().hasHttpSign)) {
+                    context.getString(R.string.error_icon_url_null)
+                }
+
+                require(!(largeImageUrl.trim().isNotEmpty() && !largeImageUrl.trim().hasHttpSign)) {
+                    context.getString(R.string.error_header_image_url_null)
+                }
+
+                require(!(appTitle.trim().isEmpty() || appDescription.trim().isEmpty())) {
+                    context.getString(R.string.error_title_description_null)
+                }
             }
-
-            require(!(dialogModal.largeImageUrl!!.trim { it <= ' ' }.isNotEmpty() && !dialogModal.largeImageUrl!!.trim { it <= ' ' }.startsWith("http"))) {
-                "Header Image URL should start with \"http\""
+            else {
+                if (iconUrl.trim().isNotEmpty()) {
+                    when {
+                        iconUrl.trim().hasHttpSign -> Log.d(TAG, "App Logo param starts with `http://`")
+                        iconUrl.trim().hasDrawableSign -> Log.d(TAG, "App Logo param is a local drawable")
+                        else -> throw IllegalArgumentException(context.getString(R.string.error_raw_resource_icon_null))
+                    }
+                }
+                if (largeImageUrl.trim().isNotEmpty()) {
+                    when {
+                        largeImageUrl.trim().hasHttpSign -> Log.d(TAG, "App Header param starts with `http://`")
+                        largeImageUrl.trim().hasDrawableSign -> Log.d(TAG, "App Header param is a local drawable")
+                        else -> throw IllegalArgumentException(context.getString(R.string.error_raw_resource_header_image_null))
+                    }
+                }
             }
-
-            require(!(dialogModal.appTitle!!.trim { it <= ' ' }.isEmpty() || dialogModal.appDesc!!.trim { it <= ' ' }.isEmpty())) {
-                "Title & description should not be Null or Blank."
-            }
-
 
             val cardView = view.findViewById<CardView>(R.id.houseAds_card_view)
             cardView.radius = cardCorner.toFloat()
@@ -168,8 +213,10 @@ class HouseAdsDialog(private val context: Context, private val jsonUrl: String) 
             val ratings = view.findViewById<RatingBar>(R.id.houseAds_rating)
             val price = view.findViewById<TextView>(R.id.houseAds_price)
 
+            val iconUrlToLoad: String = if (iconUrl.hasDrawableSign) getDrawableUriAsString(context, iconUrl)!!
+            else iconUrl
 
-            Picasso.get().load(dialogModal.iconUrl).into(icon, object : Callback {
+            Picasso.get().load(iconUrlToLoad).into(icon, object : Callback {
                 override fun onSuccess() {
                     isAdLoaded = true
                     mAdListener?.onAdLoaded()
@@ -199,8 +246,14 @@ class HouseAdsDialog(private val context: Context, private val jsonUrl: String) 
                 }
             })
 
-            if (dialogModal.largeImageUrl!!.trim { it <= ' ' }.isNotEmpty() && showHeader) {
-                Picasso.get().load(dialogModal.largeImageUrl).into(object : Target {
+            if (largeImageUrl.trim().isNotEmpty() && showHeader) {
+                val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) {
+                    val drawableName = largeImageUrl.substringAfterLast("/")
+                    getDrawableUriAsString(context, drawableName)!!
+                }
+                else largeImageUrl
+
+                Picasso.get().load(largeImageUrlToLoad).into(object : Target {
                     override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
                         headerImage.setImageBitmap(bitmap)
                         headerImage.visibility = View.VISIBLE
@@ -215,12 +268,11 @@ class HouseAdsDialog(private val context: Context, private val jsonUrl: String) 
             }
             else headerImage.visibility = View.GONE
 
-
             title.text = dialogModal.appTitle
             description.text = dialogModal.appDesc
             callToActionButton.text = dialogModal.callToActionButtonText
-            if (dialogModal.price!!.trim { it <= ' ' }.isEmpty()) price.visibility = View.GONE
-            else price.text = String.format("Price: %s", dialogModal.price)
+            if (dialogModal.price!!.trim().isEmpty()) price.visibility = View.GONE
+            else price.text = String.format(context.getString(R.string.price_format), dialogModal.price)
 
 
             builder.setView(view)
@@ -233,7 +285,7 @@ class HouseAdsDialog(private val context: Context, private val jsonUrl: String) 
             callToActionButton.setOnClickListener {
                 dialog!!.dismiss()
                 val packageOrUrl = dialogModal.packageOrUrl
-                if (packageOrUrl!!.trim { it <= ' ' }.startsWith("http")) {
+                if (packageOrUrl!!.trim().startsWith("http")) {
                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(packageOrUrl)))
                     mAdListener?.onApplicationLeft()
                 } else {
@@ -250,10 +302,11 @@ class HouseAdsDialog(private val context: Context, private val jsonUrl: String) 
         }
 
     }
+    
 
-    companion object {
-        private var isAdLoaded = false
-        private var lastLoaded = 0
+
+    private companion object {
+        private val TAG = HouseAdsDialog::class.java.simpleName.toString()
     }
 }
 
