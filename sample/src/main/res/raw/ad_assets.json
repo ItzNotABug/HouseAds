@@ -1,0 +1,105 @@
+{
+  "apps":
+  [{
+    "app_title": "Focus - Be Productive",
+    "app_desc": "\"Focus\", a Simple App which helps you Concentrate on your work without any Disturbances by completely Disabling / Locking your Phone for a specified time period...!",
+    "app_icon": "@drawable/focus_icon",
+    "app_header_image": "@drawable/focus_banner",
+    "app_uri": "com.lazygeniouz.focus",
+    "app_rating": "4.7",
+    "app_cta_text": "Install",
+    "app_price": "Free",
+    "app_adType": "dialog"
+  },
+    {
+      "app_title": "Status Saver",
+      "app_desc": "An Easy, Fast & Simple App to save WhatsApp Image & Video Statuses ",
+      "app_icon": "@drawable/status_saver_icon",
+      "app_header_image": "@drawable/status_saver_banner",
+      "app_uri": "com.lazygeniouz.saveit",
+      "app_rating": "4.6",
+      "app_cta_text": "Install",
+      "app_price": "Free",
+      "app_adType": "dialog"
+    },
+    {
+      "app_title": "TexWalls!",
+      "app_desc": "A Simple App to create Simplistic Text Based Wallpapers!",
+      "app_icon": "@drawable/texwalls_icon",
+      "app_header_image": "@drawable/texwalls_banner",
+      "app_uri": "com.lazygeniouz.tex",
+      "app_rating": "4.5",
+      "app_cta_text": "Install",
+      "app_price": "Free",
+      "app_adType": "dialog"
+    },
+
+    {
+      "app_title": "InSaver",
+      "app_desc": "InSaver is a Simple and a Compact App which helps you in Downloading the Stories & Display Picture (DP) of 'Any' Instagram User!",
+      "app_icon": "@drawable/insaver_icon",
+      "app_header_image": "@drawable/insaver_banner",
+      "app_uri": "com.lazygeniouz.instadp",
+      "app_rating": "4.3",
+      "app_cta_text": "Install",
+      "app_price": "Free",
+      "app_adType": "dialog"
+    },
+
+    {
+      "app_interstitial_url": "@drawable/interstitial",
+      "app_uri": "https://www.lazygeniouz.com",
+      "app_adType": "interstitial"
+    },
+
+    {
+      "app_interstitial_url": "@drawable/interstitial_one",
+      "app_uri": "https://www.lazygeniouz.com",
+      "app_adType": "interstitial"
+    },
+
+    {
+      "app_title": "Example App",
+      "app_desc": "This is an Example Ad..",
+      "app_icon": "@drawable/focus_icon",
+      "app_uri": "com.example",
+      "app_rating": "4.3",
+      "app_cta_text": "Install",
+      "app_price": "Free",
+      "app_adType": "native"
+    },
+
+    {
+      "app_title": "Status Saver",
+      "app_desc": "An Easy, Fast & Simple App to save WhatsApp Image & Video Statuses ",
+      "app_icon": "@drawable/status_saver_icon",
+      "app_uri": "com.lazygeniouz.saveit",
+      "app_rating": "4.6",
+      "app_cta_text": "Install",
+      "app_price": "Free",
+      "app_adType": "native"
+    },
+    
+    {
+      "app_title": "TexWalls!",
+      "app_desc": "A Simple App to create Simplistic Text Based Wallpapers!",
+      "app_icon": "@drawable/texwalls_icon",
+      "app_uri": "com.lazygeniouz.tex",
+      "app_rating": "4.7",
+      "app_cta_text": "Install",
+      "app_price": "Free",
+      "app_adType": "native"
+    },
+
+    {
+      "app_title": "InSaver",
+      "app_desc": "InSaver is a Simple and a Compact App which helps you in Downloading the Stories & Display Picture (DP) of 'Any' Instagram User!",
+      "app_icon": "@drawable/insaver_icon",
+      "app_uri": "com.lazygeniouz.instadp",
+      "app_rating": "4.3",
+      "app_cta_text": "Install",
+      "app_price": "Free",
+      "app_adType": "native"
+    }
+  ]
+}

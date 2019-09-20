@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
@@ -29,14 +30,15 @@ import com.google.android.material.tabs.TabLayout;
 import com.lazygeniouz.checkoutverifier.CheckoutVerifier;
 import com.lazygeniouz.checkoutverifier.VerifyingListener;
 import com.lazygeniouz.house.ads.sample.adapter.ViewPagerAdapter;
+import com.lazygeniouz.house.ads.sample.fragments.BaseFragment;
 import com.lazygeniouz.house.ads.sample.fragments.DialogAd;
 import com.lazygeniouz.house.ads.sample.fragments.InterstitialAd;
 import com.lazygeniouz.house.ads.sample.fragments.NativeAd;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
-    private ViewPagerAdapter adapter;
-    private ViewPager viewPager;
     private BillingProcessor billingProcessor;
 
     @Override
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        viewPager = findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         TabLayout tabLayout = findViewById(R.id.tabs);
         FloatingActionButton donate = findViewById(R.id.donate);
 
@@ -132,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new DialogAd(), "Dialog");
         adapter.addFragment(new InterstitialAd(), "Interstitial");
         adapter.addFragment(new NativeAd(), "Native");
@@ -142,9 +144,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (viewPager.getCurrentItem() == 1) {
-            ((InterstitialAd) adapter.getItem(1)).onBackPressed(MainActivity.this);
-        } else super.onBackPressed();
+        tellFragments();
+    }
+
+    private void tellFragments(){
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for(Fragment fragment : fragments) if(fragment instanceof BaseFragment) ((BaseFragment) fragment).onBackPressed(this);
     }
 
     @Override

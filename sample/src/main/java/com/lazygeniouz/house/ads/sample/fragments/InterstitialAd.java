@@ -15,16 +15,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.lazygeniouz.house.ads.HouseAdsInterstitial;
 import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.sample.R;
-import com.lazygeniouz.house.ads.sample.listener.BackPressListener;
 
 
-public class InterstitialAd extends Fragment implements AdListener, BackPressListener {
+public class InterstitialAd extends BaseFragment implements AdListener {
 
     public InterstitialAd() {}
 
@@ -40,13 +38,18 @@ public class InterstitialAd extends Fragment implements AdListener, BackPressLis
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.interstitial, container, false);
-        interstitial = new HouseAdsInterstitial(mContext, "https://lz-houseads.firebaseapp.com/houseAds/ads.json");
+
+        boolean isShowLocalAssets = getContext().getSharedPreferences("localAssetsInterstitial", Context.MODE_PRIVATE).getBoolean("value", false);
+        if (!isShowLocalAssets) interstitial = new HouseAdsInterstitial(mContext, "https://lz-houseads.firebaseapp.com/houseAds/ads.json");
+        else interstitial = new HouseAdsInterstitial(mContext, R.raw.ad_assets);
         interstitial.setAdListener(this);
 
+        SwitchCompat localAssets = rootView.findViewById(R.id.useLocalResources);
         isFromBackPress = rootView.findViewById(R.id.showOnBackPress);
         load = rootView.findViewById(R.id.load);
         show = rootView.findViewById(R.id.show);
@@ -62,6 +65,12 @@ public class InterstitialAd extends Fragment implements AdListener, BackPressLis
             interstitial.loadAd();
             load.setEnabled(false);
             load.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#e5e5e5")));
+        });
+
+        localAssets.setChecked(getContext().getSharedPreferences("localAssetsInterstitial", Context.MODE_PRIVATE).getBoolean("value", false));
+        localAssets.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getContext().getSharedPreferences("localAssetsInterstitial", Context.MODE_PRIVATE).edit().putBoolean("value", isChecked).apply();
+            getActivity().recreate();
         });
         return rootView;
     }
@@ -114,7 +123,7 @@ public class InterstitialAd extends Fragment implements AdListener, BackPressLis
 
     @Override
     public void onBackPressed(AppCompatActivity activity) {
-        if (isFromBackPress.isChecked() && interstitial.isAdLoaded()) interstitial.show();
+        if (isFromBackPress != null && isFromBackPress.isChecked() && interstitial.isAdLoaded()) interstitial.show();
         else activity.finish();
     }
 }
