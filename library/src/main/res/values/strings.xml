@@ -3,4 +3,18 @@
     <string name="header_image">Header Image</string>
     <string name="interstitial_image">Interstitial Image</string>
     <string name="close_button">Close</string>
+
+    <string name="price_format">Price: %s</string>
+
+    <string name="error_url_blank">Supplied Url is Blank/Empty.</string>
+    <string name="error_null_response">The response received was unknown or blank / null.</string>
+    <string name="error_icon_url_null">Icon URL should not be Null or Blank &amp; should start with http://</string>
+    <string name="error_header_image_url_null">Header Image URL should start with http://</string>
+    <string name="error_title_description_null">Title &amp; description should not be Null or Blank.</string>
+    <string name="error_interstitial_image_url_null">Interstitial Image URL should not be Null or Blank &amp; should start with http://</string>
+    <string name="error_raw_resource_icon_null">When using the constructor with `@RawRes` param, Icon must be a local drawable name (@drawable/logo) or start with http://</string>
+    <string name="error_raw_resource_header_image_null">When using the constructor with `@RawRes` param, Header Image must be a local drawable name (@drawable/header) or start with http://</string>
+    <string name="error_raw_resource_interstitial_image_null">When using the constructor with `@RawRes` param, Interstitial Image must be a local drawable name (@drawable/interstitial) or start with http://</string>
+    <string name="error_native_ad_null">NativeAdView is Null. Either pass HouseAdsNativeView or a View object in `setNativeAdView()`</string>
+    <string name="error_cta_is_not_textview_instance">Call to Action View must be either a Button or a TextView</string>
 </resources>
