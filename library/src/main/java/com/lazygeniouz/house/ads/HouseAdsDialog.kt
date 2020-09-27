@@ -117,7 +117,7 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
         dialog?.show()
     }
 
-    private fun configureAds(response: String) = launch {
+    private fun configureAds(response: String) {
         val builder = AlertDialog.Builder(context)
         val dialogModalList = ArrayList<DialogModal>()
 
@@ -207,85 +207,87 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
             val ratings = view.findViewById<RatingBar>(R.id.houseAds_rating)
             val price = view.findViewById<TextView>(R.id.houseAds_price)
 
-            val iconUrlToLoad: String = if (iconUrl.hasDrawableSign) context.getDrawableUriAsString(iconUrl)!!
-            else iconUrl
-            when (val result = getImageFromNetwork(iconUrlToLoad)) {
-                is SuccessResult -> {
-                    icon.setImageDrawable(result.drawable)
-                    isAdLoaded = true
+            launch {
+                val iconUrlToLoad: String = if (iconUrl.hasDrawableSign) context.getDrawableUriAsString(iconUrl)!!
+                else iconUrl
 
-                    if (icon.visibility == View.GONE) icon.visibility = View.VISIBLE
-                    var dominantColor = ContextCompat.getColor(context, R.color.colorAccent)
-                    if (usePalette) {
-                        val palette = Palette.from((icon.drawable as BitmapDrawable).bitmap).generate()
-                        dominantColor = palette.getDominantColor(ContextCompat.getColor(context, R.color.colorAccent))
-                    }
-
-                    val drawable = callToActionButton.background as GradientDrawable
-                    drawable.setColor(dominantColor)
-
-                    if (dialogModal.getRating() > 0) {
-                        ratings.rating = dialogModal.getRating()
-                        val ratingsDrawable = ratings.progressDrawable
-                        DrawableCompat.setTint(ratingsDrawable, dominantColor)
-                    } else ratings.visibility = View.GONE
-                }
-                is ErrorResult -> {
-                    isAdLoaded = false
-                    mAdListener?.onAdLoadFailed(Exception("The Icon Uri: $iconUrlToLoad could not be fetched. More Info: ${result.throwable}"))
-                    icon.visibility = View.GONE
-                }
-            }
-
-            if (largeImageUrl.trim().isNotEmpty() && showHeader) {
-                val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) context.getDrawableUriAsString(largeImageUrl)!!
-                else largeImageUrl
-
-                when (val result = getImageFromNetwork(largeImageUrlToLoad)) {
+                when (val result = getImageFromNetwork(iconUrlToLoad)) {
                     is SuccessResult -> {
-                        headerImage.setImageDrawable(result.drawable)
-                        headerImage.visibility = View.VISIBLE
-                    }
+                        icon.setImageDrawable(result.drawable)
+                        isAdLoaded = true
 
+                        if (icon.visibility == View.GONE) icon.visibility = View.VISIBLE
+                        var dominantColor = ContextCompat.getColor(context, R.color.colorAccent)
+                        if (usePalette) {
+                            val palette = Palette.from((icon.drawable as BitmapDrawable).bitmap).generate()
+                            dominantColor = palette.getDominantColor(ContextCompat.getColor(context, R.color.colorAccent))
+                        }
+
+                        val drawable = callToActionButton.background as GradientDrawable
+                        drawable.setColor(dominantColor)
+
+                        if (dialogModal.getRating() > 0) {
+                            ratings.rating = dialogModal.getRating()
+                            val ratingsDrawable = ratings.progressDrawable
+                            DrawableCompat.setTint(ratingsDrawable, dominantColor)
+                        } else ratings.visibility = View.GONE
+                    }
                     is ErrorResult -> {
-                        headerImage.visibility = View.GONE
+                        isAdLoaded = false
+                        mAdListener?.onAdLoadFailed(Exception("The Icon Uri: $iconUrlToLoad could not be fetched. More Info: ${result.throwable}"))
+                        icon.visibility = View.GONE
                     }
                 }
-            } else headerImage.visibility = View.GONE
+                if (largeImageUrl.trim().isNotEmpty() && showHeader) {
+                    val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) context.getDrawableUriAsString(largeImageUrl)!!
+                    else largeImageUrl
 
-            title.text = dialogModal.appTitle
-            description.text = dialogModal.appDesc
-            callToActionButton.text = dialogModal.callToActionButtonText
-            callToActionButton.isAllCaps = isAllCaps
-            if (dialogModal.price!!.trim().isEmpty()) price.visibility = View.GONE
-            else price.text = String.format(context.getString(R.string.price_format), dialogModal.price)
+                    when (val result = getImageFromNetwork(largeImageUrlToLoad)) {
+                        is SuccessResult -> {
+                            headerImage.setImageDrawable(result.drawable)
+                            headerImage.visibility = View.VISIBLE
+                        }
 
-            builder.setView(view)
-            dialog = builder.create()
-            dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-            dialog!!.setOnShowListener { mAdListener?.onAdShown() }
-            dialog!!.setOnCancelListener { mAdListener?.onAdClosed() }
-            dialog!!.setOnDismissListener { mAdListener?.onAdClosed() }
-
-            // Calling this here because previous implementation was'nt correct
-            // and the first call to show() would never show the dialog.
-            if (isAdLoaded) mAdListener?.onAdLoaded()
-
-            callToActionButton.setOnClickListener {
-                dialog!!.dismiss()
-                val packageOrUrl = dialogModal.packageOrUrl
-                if (packageOrUrl!!.trim().startsWith("http")) {
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(packageOrUrl)))
-                    mAdListener?.onApplicationLeft()
-                } else {
-                    try {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageOrUrl")))
-                        mAdListener?.onApplicationLeft()
-                    } catch (e: ActivityNotFoundException) {
-                        mAdListener?.onApplicationLeft()
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=$packageOrUrl")))
+                        is ErrorResult -> {
+                            headerImage.visibility = View.GONE
+                        }
                     }
+                } else headerImage.visibility = View.GONE
 
+                title.text = dialogModal.appTitle
+                description.text = dialogModal.appDesc
+                callToActionButton.text = dialogModal.callToActionButtonText
+                callToActionButton.isAllCaps = isAllCaps
+                if (dialogModal.price!!.trim().isEmpty()) price.visibility = View.GONE
+                else price.text = String.format(context.getString(R.string.price_format), dialogModal.price)
+
+                builder.setView(view)
+                dialog = builder.create()
+                dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog!!.setOnShowListener { mAdListener?.onAdShown() }
+                dialog!!.setOnCancelListener { mAdListener?.onAdClosed() }
+                dialog!!.setOnDismissListener { mAdListener?.onAdClosed() }
+
+                // Calling this here because previous implementation was'nt correct
+                // and the first call to show() would never show the dialog.
+                if (isAdLoaded) mAdListener?.onAdLoaded()
+
+                callToActionButton.setOnClickListener {
+                    dialog!!.dismiss()
+                    val packageOrUrl = dialogModal.packageOrUrl
+                    if (packageOrUrl!!.trim().startsWith("http")) {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(packageOrUrl)))
+                        mAdListener?.onApplicationLeft()
+                    } else {
+                        try {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageOrUrl")))
+                            mAdListener?.onApplicationLeft()
+                        } catch (e: ActivityNotFoundException) {
+                            mAdListener?.onApplicationLeft()
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=$packageOrUrl")))
+                        }
+
+                    }
                 }
             }
         }

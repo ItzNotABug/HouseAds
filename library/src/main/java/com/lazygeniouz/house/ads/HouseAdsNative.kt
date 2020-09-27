@@ -24,6 +24,7 @@ import com.lazygeniouz.house.ads.extension.hasDrawableSign
 import com.lazygeniouz.house.ads.extension.hasHttpSign
 import com.lazygeniouz.house.ads.extension.isAppInstalled
 import com.lazygeniouz.house.ads.helper.JsonHelper
+import com.lazygeniouz.house.ads.listener.NativeActionListener
 import com.lazygeniouz.house.ads.listener.NativeAdListener
 import com.lazygeniouz.house.ads.modal.DialogModal
 import com.lazygeniouz.house.ads.modal.HouseAdsNativeView
@@ -46,8 +47,8 @@ class HouseAdsNative(context: Context, private val jsonUrl: String) : BaseAd(con
 
     private var customNativeView: View? = null
     private var nativeAdView: HouseAdsNativeView? = null
-    private var mNativeAdListener: NativeAdListener? = null
-    private var callToActionListener: NativeAdListener.CallToActionListener? = null
+    private var nativeAdListener: NativeAdListener? = null
+    private var nativeActionListener: NativeActionListener? = null
 
     private val jsonHelper: JsonHelper = JsonHelper()
 
@@ -77,12 +78,12 @@ class HouseAdsNative(context: Context, private val jsonUrl: String) : BaseAd(con
     }
 
     fun setNativeAdListener(listener: NativeAdListener): HouseAdsNative {
-        this.mNativeAdListener = listener
+        this.nativeAdListener = listener
         return this
     }
 
-    fun setCallToActionListener(listener: NativeAdListener.CallToActionListener): HouseAdsNative {
-        this.callToActionListener = listener
+    fun setCallToActionListener(listener: NativeActionListener): HouseAdsNative {
+        this.nativeActionListener = listener
         return this
     }
 
@@ -96,13 +97,13 @@ class HouseAdsNative(context: Context, private val jsonUrl: String) : BaseAd(con
                     if (result.trim().isNotEmpty()) {
                         jsonRawResponse = result
                         configureAds(result)
-                    } else mNativeAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
+                    } else nativeAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
                 }
             } else configureAds(jsonRawResponse)
         } else configureAds(jsonLocalRawResponse)
     }
 
-    private fun configureAds(response: String) = launch {
+    private fun configureAds(response: String) {
         val modalList = ArrayList<DialogModal>()
 
         try {
@@ -149,7 +150,6 @@ class HouseAdsNative(context: Context, private val jsonUrl: String) : BaseAd(con
             val icon: ImageView?
             val headerImage: ImageView?
             val ratings: RatingBar?
-
 
             if (nativeAdView != null) {
                 val view = nativeAdView
@@ -200,100 +200,102 @@ class HouseAdsNative(context: Context, private val jsonUrl: String) : BaseAd(con
             else iconUrl
 
 
-            when (val result = getImageFromNetwork(iconUrlToLoad)) {
-                is SuccessResult -> {
-                    if (usePalette) {
-                        val bitmap = (result.drawable as BitmapDrawable).bitmap
-                        icon!!.setImageBitmap(bitmap)
-                        val palette = Palette.from(bitmap).generate()
-                        val dominantColor = palette.getDominantColor(ContextCompat.getColor(context, R.color.colorAccent))
-
-                        val drawable = GradientDrawable()
-                        drawable.setColor(dominantColor)
-                        callToActionView!!.background = drawable
-
-                        if (dialogModal.getRating() > 0) {
-                            ratings!!.rating = dialogModal.getRating()
-                            val ratingsDrawable = ratings.progressDrawable
-                            DrawableCompat.setTint(ratingsDrawable, dominantColor)
-                        } else
-                            ratings!!.visibility = View.GONE
-                    }
-
-
-                    if (largeImageUrl.trim().isEmpty()) {
-                        isAdLoaded = true
-                        mNativeAdListener?.onAdLoaded()
-                    }
-
-                }
-                is ErrorResult -> {
-                    isAdLoaded = false
-                    if (headerImage == null || dialogModal.largeImageUrl!!.isEmpty()) {
-                        mNativeAdListener?.onAdLoadFailed(Exception(result.throwable))
-                    }
-                }
-            }
-
-            if (largeImageUrl.trim().isNotEmpty()) {
-                val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) context.getDrawableUriAsString(largeImageUrl)!!
-                else largeImageUrl
-
-                when (val result = getImageFromNetwork(largeImageUrlToLoad)) {
+            launch {
+                when (val result = getImageFromNetwork(iconUrlToLoad)) {
                     is SuccessResult -> {
-                        val bitmap = (result.drawable as BitmapDrawable).bitmap
-                        if (headerImage != null) {
-                            headerImage.setImageBitmap(bitmap)
-                            headerImage.visibility = View.VISIBLE
+                        if (usePalette) {
+                            val bitmap = (result.drawable as BitmapDrawable).bitmap
+                            icon!!.setImageBitmap(bitmap)
+                            val palette = Palette.from(bitmap).generate()
+                            val dominantColor = palette.getDominantColor(ContextCompat.getColor(context, R.color.colorAccent))
+
+                            val drawable = GradientDrawable()
+                            drawable.setColor(dominantColor)
+                            callToActionView!!.background = drawable
+
+                            if (dialogModal.getRating() > 0) {
+                                ratings!!.rating = dialogModal.getRating()
+                                val ratingsDrawable = ratings.progressDrawable
+                                DrawableCompat.setTint(ratingsDrawable, dominantColor)
+                            } else
+                                ratings!!.visibility = View.GONE
                         }
-                        isAdLoaded = true
-                        mNativeAdListener?.onAdLoaded()
+
+
+                        if (largeImageUrl.trim().isEmpty()) {
+                            isAdLoaded = true
+                            nativeAdListener?.onAdLoaded()
+                        }
+
                     }
                     is ErrorResult -> {
-                        mNativeAdListener?.onAdLoadFailed(Exception(result.throwable))
                         isAdLoaded = false
-                    }
-                }
-            } else headerImage?.visibility = View.GONE
-
-            title!!.text = dialogModal.appTitle
-            description!!.text = dialogModal.appDesc
-            if (price != null) {
-                price.visibility = View.VISIBLE
-                if (dialogModal.price!!.trim().isNotEmpty())
-                    price.text = String.format(context.getString(R.string.price_format), dialogModal.price)
-                else
-                    price.visibility = View.GONE
-            }
-
-            if (ratings != null) {
-                ratings.visibility = View.VISIBLE
-                if (dialogModal.getRating() > 0) ratings.rating = dialogModal.getRating()
-                else ratings.visibility = View.GONE
-            }
-
-            if (callToActionView != null) {
-                if (callToActionView is TextView) callToActionView.text = dialogModal.callToActionButtonText
-                if (callToActionView is Button) callToActionView.text = dialogModal.callToActionButtonText
-                require(callToActionView is TextView) { context.getString(R.string.error_cta_is_not_textview_instance) }
-
-                callToActionView.setOnClickListener { view ->
-                    if (callToActionListener != null)
-                        callToActionListener!!.onCallToActionClicked(view)
-                    else {
-                        val packageOrUrl = dialogModal.packageOrUrl
-                        if (packageOrUrl!!.trim().startsWith("http")) {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(packageOrUrl)))
-                        } else {
-                            try {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageOrUrl")))
-                            } catch (e: ActivityNotFoundException) {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=$packageOrUrl")))
-                            }
-
+                        if (headerImage == null || dialogModal.largeImageUrl!!.isEmpty()) {
+                            nativeAdListener?.onAdLoadFailed(Exception(result.throwable))
                         }
                     }
                 }
+                if (largeImageUrl.trim().isNotEmpty()) {
+                    val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) context.getDrawableUriAsString(largeImageUrl)!!
+                    else largeImageUrl
+
+                    when (val result = getImageFromNetwork(largeImageUrlToLoad)) {
+                        is SuccessResult -> {
+                            val bitmap = (result.drawable as BitmapDrawable).bitmap
+                            if (headerImage != null) {
+                                headerImage.setImageBitmap(bitmap)
+                                headerImage.visibility = View.VISIBLE
+                            }
+                            isAdLoaded = true
+                            nativeAdListener?.onAdLoaded()
+                        }
+                        is ErrorResult -> {
+                            nativeAdListener?.onAdLoadFailed(Exception(result.throwable))
+                            isAdLoaded = false
+                        }
+                    }
+                } else headerImage?.visibility = View.GONE
+
+                title!!.text = dialogModal.appTitle
+                description!!.text = dialogModal.appDesc
+                if (price != null) {
+                    price.visibility = View.VISIBLE
+                    if (dialogModal.price!!.trim().isNotEmpty())
+                        price.text = String.format(context.getString(R.string.price_format), dialogModal.price)
+                    else
+                        price.visibility = View.GONE
+                }
+
+                if (ratings != null) {
+                    ratings.visibility = View.VISIBLE
+                    if (dialogModal.getRating() > 0) ratings.rating = dialogModal.getRating()
+                    else ratings.visibility = View.GONE
+                }
+
+                if (callToActionView != null) {
+                    if (callToActionView is TextView) callToActionView.text = dialogModal.callToActionButtonText
+                    if (callToActionView is Button) callToActionView.text = dialogModal.callToActionButtonText
+                    require(callToActionView is TextView) { context.getString(R.string.error_cta_is_not_textview_instance) }
+
+                    callToActionView.setOnClickListener { view ->
+                        if (nativeActionListener != null)
+                            nativeActionListener!!.onClick(view)
+                        else {
+                            val packageOrUrl = dialogModal.packageOrUrl
+                            if (packageOrUrl!!.trim().startsWith("http")) {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(packageOrUrl)))
+                            } else {
+                                try {
+                                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageOrUrl")))
+                                } catch (e: ActivityNotFoundException) {
+                                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=$packageOrUrl")))
+                                }
+
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
