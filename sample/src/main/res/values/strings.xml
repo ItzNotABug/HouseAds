@@ -26,4 +26,6 @@
     <string name="large">Large</string>
     <string name="local_assets">Load locally stored assets</string>
     <string name="cta_all_caps">CTA is All Caps</string>
+    <string name="close_interstitial_on_back_press">Close Interstitial on Back Press</string>
+    <string name="hide_navigation_bar">Hide Navigation Bar</string>
 </resources>
