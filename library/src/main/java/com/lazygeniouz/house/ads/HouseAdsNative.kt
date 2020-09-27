@@ -3,12 +3,9 @@ package com.lazygeniouz.house.ads
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -19,29 +16,29 @@ import androidx.annotation.RawRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.palette.graphics.Palette
+import coil.request.ErrorResult
+import coil.request.SuccessResult
+import com.lazygeniouz.house.ads.base.BaseAd
+import com.lazygeniouz.house.ads.extension.getDrawableUriAsString
 import com.lazygeniouz.house.ads.extension.hasDrawableSign
 import com.lazygeniouz.house.ads.extension.hasHttpSign
-import com.lazygeniouz.house.ads.helper.HouseAdsHelper
-import com.lazygeniouz.house.ads.helper.JsonPullerTask
-import com.lazygeniouz.house.ads.helper.RemoveJsonObjectCompat
+import com.lazygeniouz.house.ads.extension.isAppInstalled
+import com.lazygeniouz.house.ads.helper.JsonHelper
 import com.lazygeniouz.house.ads.listener.NativeAdListener
 import com.lazygeniouz.house.ads.modal.DialogModal
 import com.lazygeniouz.house.ads.modal.HouseAdsNativeView
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
 @Suppress("unused")
-class HouseAdsNative(private val context: Context, private val jsonUrl: String) {
+class HouseAdsNative(context: Context, private val jsonUrl: String) : BaseAd(context) {
 
     private var isUsingRawRes = false
     private var jsonRawResponse = ""
     private var jsonLocalRawResponse = ""
 
-    var isAdLoaded = false
+    private var isAdLoaded = false
     private var lastLoaded = 0
 
     private var usePalette = true
@@ -52,9 +49,11 @@ class HouseAdsNative(private val context: Context, private val jsonUrl: String) 
     private var mNativeAdListener: NativeAdListener? = null
     private var callToActionListener: NativeAdListener.CallToActionListener? = null
 
+    private val jsonHelper: JsonHelper = JsonHelper()
+
     constructor(context: Context, @RawRes rawFile: Int) : this(context, "") {
         isUsingRawRes = true
-        jsonLocalRawResponse = HouseAdsHelper.getJsonFromRaw(context, rawFile)
+        jsonLocalRawResponse = jsonHelper.getJsonFromRaw(context, rawFile)
     }
 
     fun setNativeAdView(nativeAdView: HouseAdsNativeView): HouseAdsNative {
@@ -87,44 +86,35 @@ class HouseAdsNative(private val context: Context, private val jsonUrl: String) 
         return this
     }
 
-    fun loadAds(): HouseAdsNative {
+    fun loadAds() {
         isAdLoaded = false
         if (!isUsingRawRes) {
             require(jsonUrl.trim().isNotEmpty()) { context.getString(R.string.error_url_blank) }
             if (jsonRawResponse.isEmpty()) {
-                JsonPullerTask(jsonUrl, object : JsonPullerTask.JsonPullerListener {
-                    override fun onPostExecute(result: String) {
-                        if (result.trim().isNotEmpty()) {
-                            jsonRawResponse = result
-                            configureAds(result)
-                        }
-                        else {
-                            mNativeAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
-                        }
-                    }
-
-                }).execute()
-            }
-            else configureAds(jsonRawResponse)
-        }
-        else configureAds(jsonLocalRawResponse)
-        return this
+                launch {
+                    val result = jsonHelper.getJsonObject(jsonUrl)
+                    if (result.trim().isNotEmpty()) {
+                        jsonRawResponse = result
+                        configureAds(result)
+                    } else mNativeAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
+                }
+            } else configureAds(jsonRawResponse)
+        } else configureAds(jsonLocalRawResponse)
     }
 
-    private fun configureAds(response: String) {
+    private fun configureAds(response: String) = launch {
         val modalList = ArrayList<DialogModal>()
 
         try {
             val rootObject = JSONObject(response)
-            val array = rootObject.optJSONArray("apps")
+            val array = rootObject.optJSONArray("apps")!!
 
             for (childObject in 0 until array.length()) {
                 val jsonObject = array.getJSONObject(childObject)
-                if (hideIfAppInstalled && !jsonObject.optString("app_uri").hasHttpSign && HouseAdsHelper.isAppInstalled(context, jsonObject.optString("app_uri"))) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) array.remove(childObject)
-                    else RemoveJsonObjectCompat(childObject, array).execute()
-                }
-                else {
+                if (hideIfAppInstalled && !jsonObject.optString("app_uri").hasHttpSign &&
+                        context.isAppInstalled(jsonObject.optString("app_uri"))) {
+                    array.remove(childObject)
+                } else {
                     //We Only Add Native Ones!
                     if (jsonObject.optString("app_adType") == "native") {
                         val dialogModal = DialogModal()
@@ -189,8 +179,7 @@ class HouseAdsNative(private val context: Context, private val jsonUrl: String) 
                 require(!(iconUrl.trim().isEmpty() || !iconUrl.trim().hasHttpSign)) { context.getString(R.string.error_icon_url_null) }
                 require(!(largeImageUrl.trim().isNotEmpty() && !largeImageUrl.trim().hasHttpSign)) { context.getString(R.string.error_header_image_url_null) }
                 require(!(dialogModal.appTitle!!.trim().isEmpty() || dialogModal.appDesc!!.trim().isEmpty())) { context.getString(R.string.error_title_description_null) }
-            }
-            else {
+            } else {
                 if (iconUrl.trim().isNotEmpty()) {
                     when {
                         iconUrl.trim().startsWith("http") -> Log.d(TAG, "App Logo param starts with `http://`")
@@ -207,13 +196,16 @@ class HouseAdsNative(private val context: Context, private val jsonUrl: String) 
                 }
             }
 
-            val iconUrlToLoad: String = if (iconUrl.hasDrawableSign) HouseAdsHelper.getDrawableUriAsString(context, iconUrl)!!
+            val iconUrlToLoad: String = if (iconUrl.hasDrawableSign) context.getDrawableUriAsString(iconUrl)!!
             else iconUrl
 
-            Picasso.get().load(iconUrlToLoad).into(icon!!, object : Callback {
-                override fun onSuccess() {
+
+            when (val result = getImageFromNetwork(iconUrlToLoad)) {
+                is SuccessResult -> {
                     if (usePalette) {
-                        val palette = Palette.from((icon.drawable as BitmapDrawable).bitmap).generate()
+                        val bitmap = (result.drawable as BitmapDrawable).bitmap
+                        icon!!.setImageBitmap(bitmap)
+                        val palette = Palette.from(bitmap).generate()
                         val dominantColor = palette.getDominantColor(ContextCompat.getColor(context, R.color.colorAccent))
 
                         val drawable = GradientDrawable()
@@ -233,23 +225,23 @@ class HouseAdsNative(private val context: Context, private val jsonUrl: String) 
                         isAdLoaded = true
                         mNativeAdListener?.onAdLoaded()
                     }
-                }
 
-                override fun onError(exception: Exception) {
+                }
+                is ErrorResult -> {
                     isAdLoaded = false
                     if (headerImage == null || dialogModal.largeImageUrl!!.isEmpty()) {
-                        mNativeAdListener?.onAdLoadFailed(exception)
+                        mNativeAdListener?.onAdLoadFailed(Exception(result.throwable))
                     }
                 }
-            })
-
+            }
 
             if (largeImageUrl.trim().isNotEmpty()) {
-                val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) HouseAdsHelper.getDrawableUriAsString(context, largeImageUrl)!!
+                val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) context.getDrawableUriAsString(largeImageUrl)!!
                 else largeImageUrl
 
-                Picasso.get().load(largeImageUrlToLoad).into(object : Target {
-                    override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                when (val result = getImageFromNetwork(largeImageUrlToLoad)) {
+                    is SuccessResult -> {
+                        val bitmap = (result.drawable as BitmapDrawable).bitmap
                         if (headerImage != null) {
                             headerImage.setImageBitmap(bitmap)
                             headerImage.visibility = View.VISIBLE
@@ -257,16 +249,12 @@ class HouseAdsNative(private val context: Context, private val jsonUrl: String) 
                         isAdLoaded = true
                         mNativeAdListener?.onAdLoaded()
                     }
-
-                    override fun onBitmapFailed(exception: Exception, errorDrawable: Drawable?) {
-                        mNativeAdListener?.onAdLoadFailed(exception)
+                    is ErrorResult -> {
+                        mNativeAdListener?.onAdLoadFailed(Exception(result.throwable))
                         isAdLoaded = false
                     }
-
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-                })
-            }
-            else headerImage?.visibility = View.GONE
+                }
+            } else headerImage?.visibility = View.GONE
 
             title!!.text = dialogModal.appTitle
             description!!.text = dialogModal.appDesc
@@ -280,10 +268,8 @@ class HouseAdsNative(private val context: Context, private val jsonUrl: String) 
 
             if (ratings != null) {
                 ratings.visibility = View.VISIBLE
-                if (dialogModal.getRating() > 0)
-                    ratings.rating = dialogModal.getRating()
-                else
-                    ratings.visibility = View.GONE
+                if (dialogModal.getRating() > 0) ratings.rating = dialogModal.getRating()
+                else ratings.visibility = View.GONE
             }
 
             if (callToActionView != null) {
@@ -313,6 +299,6 @@ class HouseAdsNative(private val context: Context, private val jsonUrl: String) 
     }
 
     private companion object {
-        private val TAG = HouseAdsNative::class.java.simpleName.toString()
+        private val TAG = HouseAdsNative::class.java.simpleName
     }
 }

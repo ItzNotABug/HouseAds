@@ -1,115 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:animateLayoutChanges="true"
     android:gravity="center"
-    android:animateLayoutChanges="true">
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/useLocalResources"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/local_assets"/>
+        android:text="@string/local_assets" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/hideIfInstalled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/hide_app_if_installed"/>
+        android:text="@string/hide_app_if_installed" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/usePalette"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/use_palette"/>
+        android:text="@string/use_palette" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/showHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginEnd="15dp"
-        android:text="@string/show_header"/>
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/show_header" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/isAllCaps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:text="@string/cta_all_caps" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginEnd="15dp">
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
             android:text="@string/card_corner_radius"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
             tools:ignore="RelativeOverlap" />
 
         <EditText
             android:id="@+id/cardCorner"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="@string/card_corner_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:gravity="center"
             android:inputType="number"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:text="@string/card_corner_size"
             tools:ignore="Autofill,LabelFor" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginEnd="15dp">
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
             android:text="@string/set_action_button_corner_radius"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
             tools:ignore="RelativeOverlap" />
 
         <EditText
             android:id="@+id/ctaCorner"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="@string/cta_corner_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:gravity="center"
             android:inputType="number"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:text="@string/cta_corner_size"
             tools:ignore="Autofill,LabelFor" />
     </RelativeLayout>
 
@@ -119,7 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:text="@string/loading"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/load"
@@ -128,8 +138,8 @@
         android:layout_margin="20dp"
         android:padding="10dp"
         android:text="@string/load_ad"
-        app:cornerRadius="20dp"
-        app:backgroundTint="@color/colorAccent"
         android:textColor="#fff"
-        android:theme="@style/Theme.MaterialComponents"/>
+        android:theme="@style/Theme.MaterialComponents"
+        app:backgroundTint="@color/colorAccent"
+        app:cornerRadius="20dp" />
 </LinearLayout>

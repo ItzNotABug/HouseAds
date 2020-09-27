@@ -25,4 +25,5 @@
     <string name="medium">Medium</string>
     <string name="large">Large</string>
     <string name="local_assets">Load locally stored assets</string>
+    <string name="cta_all_caps">CTA is All Caps</string>
 </resources>

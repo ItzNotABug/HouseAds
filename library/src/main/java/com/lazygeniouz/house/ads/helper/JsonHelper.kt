@@ -6,13 +6,11 @@
 
 package com.lazygeniouz.house.ads.helper
 
-import android.content.ContentResolver
 import android.content.Context
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.util.Log
-import androidx.annotation.AnyRes
 import androidx.annotation.RestrictTo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.BufferedReader
@@ -21,11 +19,16 @@ import java.io.InputStreamReader
 
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-object HouseAdsHelper {
-    internal fun parseJsonObject(url: String): String {
-        var doc: Document? = null
+class JsonHelper {
+
+    suspend fun getJsonObject(url: String): String = withContext(Dispatchers.IO) {
+        return@withContext parseJsonObject(url)
+    }
+
+    private fun parseJsonObject(url: String): String {
+        var document: Document? = null
         try {
-            doc = Jsoup
+            document = Jsoup
                     .connect(url.trim())
                     .ignoreContentType(true)
                     .timeout(3000)
@@ -38,25 +41,13 @@ object HouseAdsHelper {
                     .header("Accept-Encoding", "gzip,deflate,sdch")
                     .header("Accept-Language", "en-US,en;q=0.8,ru;q=0.6")
                     .get()
-        } catch (e: IOException) {
-            Log.e("HouseAds", e.message)
-            e.printStackTrace()
+        } catch (error: IOException) {
+            Log.e("HouseAds", "${error.message}")
+            error.printStackTrace()
         }
 
 
-        return if (doc != null)
-            doc.body().text()
-        else
-            ""
-    }
-
-    internal fun isAppInstalled(mActivity: Context, packageName: String): Boolean {
-        return try {
-            mActivity.packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
-            true
-        } catch (e: PackageManager.NameNotFoundException) {
-            false
-        }
+        return document?.body()?.text() ?: ""
     }
 
     internal fun getJsonFromRaw(ctx: Context, resId: Int): String {
@@ -67,7 +58,7 @@ object HouseAdsHelper {
         val text = StringBuilder()
 
         try {
-            while ({line = buffReader.readLine(); line}() != null) {
+            while ({ line = buffReader.readLine(); line }() != null) {
                 text.append(line)
                 text.append('\n')
             }
@@ -76,19 +67,5 @@ object HouseAdsHelper {
         }
 
         return text.toString()
-    }
-
-    internal fun getDrawableUriAsString(context: Context, name: String): String? {
-        val drawableName = name.substringAfterLast("/")
-        val resourceId = context.resources.getIdentifier(drawableName, "drawable", context.packageName)
-        return getUriToResource(context, resourceId).toString()
-    }
-
-    private fun getUriToResource(context: Context, @AnyRes resId: Int): Uri {
-        val res = context.resources
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
-                "://" + res.getResourcePackageName(resId)
-                + '/'.toString() + res.getResourceTypeName(resId)
-                + '/'.toString() + res.getResourceEntryName(resId))
     }
 }

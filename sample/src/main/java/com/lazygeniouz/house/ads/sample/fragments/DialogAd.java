@@ -18,11 +18,10 @@ import com.lazygeniouz.house.ads.listener.AdListener;
 import com.lazygeniouz.house.ads.sample.R;
 
 public class DialogAd extends BaseFragment implements AdListener {
-    public DialogAd() {}
+    public DialogAd() {
+    }
 
-    private SwitchCompat hideIfAppInstalled;
-    private SwitchCompat usePalette;
-    private SwitchCompat hideHeader;
+    private SwitchCompat hideIfAppInstalled, usePalette, hideHeader, allCaps;
     private EditText cardCorner, ctaCorner;
     private HouseAdsDialog dialog;
     private TextView loading;
@@ -34,14 +33,15 @@ public class DialogAd extends BaseFragment implements AdListener {
         boolean isShowLocalAssets = getContext().getSharedPreferences("localAssets", Context.MODE_PRIVATE).getBoolean("value", false);
 
         if (isShowLocalAssets) dialog = new HouseAdsDialog(getContext(), R.raw.ad_assets);
-        else dialog = new HouseAdsDialog(getContext(), "https://lz-houseads.firebaseapp.com/houseAds/ads.json");
-        dialog.setAdListener(this);
+        else dialog = new HouseAdsDialog(requireContext(), "https://lz-houseads.firebaseapp.com/houseAds/ads.json");
+        dialog.setAdListener(DialogAd.this);
 
         SwitchCompat localAssets = rootView.findViewById(R.id.useLocalResources);
 
         hideIfAppInstalled = rootView.findViewById(R.id.hideIfInstalled);
         usePalette = rootView.findViewById(R.id.usePalette);
         hideHeader = rootView.findViewById(R.id.showHeader);
+        allCaps = rootView.findViewById(R.id.isAllCaps);
         cardCorner = rootView.findViewById(R.id.cardCorner);
         ctaCorner = rootView.findViewById(R.id.ctaCorner);
         loading = rootView.findViewById(R.id.loading);
@@ -59,8 +59,9 @@ public class DialogAd extends BaseFragment implements AdListener {
             dialog.hideIfAppInstalled(hideIfAppInstalled.isChecked())
                     .usePalette(usePalette.isChecked())
                     .showHeaderIfAvailable(hideHeader.isChecked())
-                    .setCardCorners(Integer.valueOf(cardCorner.getText().toString()))
-                    .setCtaCorner(Integer.valueOf(ctaCorner.getText().toString()))
+                    .setCardCorners(Integer.parseInt(cardCorner.getText().toString()))
+                    .setCtaCorner(Integer.parseInt(ctaCorner.getText().toString()))
+                    .ctaAllCaps(allCaps.isChecked())
                     .loadAds();
         });
 

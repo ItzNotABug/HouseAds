@@ -11,7 +11,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -20,27 +20,29 @@ import android.widget.ImageView
 import androidx.annotation.AnimRes
 import androidx.annotation.RawRes
 import androidx.appcompat.app.AppCompatActivity
+import coil.request.ErrorResult
+import coil.request.SuccessResult
+import com.lazygeniouz.house.ads.base.BaseAd
+import com.lazygeniouz.house.ads.extension.getDrawableUriAsString
 import com.lazygeniouz.house.ads.extension.hasDrawableSign
 import com.lazygeniouz.house.ads.extension.hasHttpSign
-import com.lazygeniouz.house.ads.helper.HouseAdsHelper
-import com.lazygeniouz.house.ads.helper.HouseAdsHelper.getJsonFromRaw
-import com.lazygeniouz.house.ads.helper.JsonPullerTask
+import com.lazygeniouz.house.ads.helper.JsonHelper
 import com.lazygeniouz.house.ads.listener.AdListener
 import com.lazygeniouz.house.ads.modal.InterstitialModal
-import com.squareup.picasso.Picasso
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
-class HouseAdsInterstitial(private val context: Context, private val jsonUrl: String) {
+class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : BaseAd(context) {
 
     private var isUsingRawRes = false
     private var jsonRawResponse = ""
     private var jsonLocalRawResponse = ""
+    private val jsonHelper: JsonHelper = JsonHelper()
 
     constructor(context: Context, @RawRes rawFile: Int) : this(context, "") {
         isUsingRawRes = true
-        jsonLocalRawResponse = getJsonFromRaw(context, rawFile)
+        jsonLocalRawResponse = jsonHelper.getJsonFromRaw(context, rawFile)
     }
 
     fun setAdListener(adListener: AdListener): HouseAdsInterstitial {
@@ -48,38 +50,31 @@ class HouseAdsInterstitial(private val context: Context, private val jsonUrl: St
         return this
     }
 
-    fun loadAd(): HouseAdsInterstitial {
+    fun loadAd() {
         if (!isUsingRawRes) {
             require(jsonUrl.trim().isNotEmpty()) { context.getString(R.string.error_url_blank) }
             if (jsonRawResponse.isEmpty()) {
-                JsonPullerTask(jsonUrl, object : JsonPullerTask.JsonPullerListener {
-                    override fun onPostExecute(result: String) {
-                        if (result.trim().isNotEmpty()) {
-                            jsonRawResponse = result
-                            configureAds(result)
-                        }
-                        else {
-                            mAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
-                        }
-                    }
-
-                }).execute()
-            }
-            else configureAds(jsonRawResponse)
+                launch {
+                    val result = jsonHelper.getJsonObject(jsonUrl)
+                    if (result.trim().isNotEmpty()) {
+                        jsonRawResponse = result
+                        configureAds(result)
+                    } else mAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
+                }
+            } else configureAds(jsonRawResponse)
         } else configureAds(jsonLocalRawResponse)
-        return this
     }
 
     fun isAdLoaded(): Boolean {
         return isAdLoaded
     }
 
-    private fun configureAds(jsonResponse: String) {
+    private fun configureAds(jsonResponse: String) = launch {
         val modalArrayList = ArrayList<InterstitialModal>()
 
         try {
             val rootObject = JSONObject(jsonResponse)
-            val array = rootObject.optJSONArray("apps")
+            val array = rootObject.optJSONArray("apps")!!
 
             for (childObject in 0 until array.length()) {
                 val jsonObject = array.getJSONObject(childObject)
@@ -113,23 +108,21 @@ class HouseAdsInterstitial(private val context: Context, private val jsonUrl: St
             }
 
             val imageUrlToLoad: String = if (modal.interstitialImageUrl.hasDrawableSign) {
-                HouseAdsHelper.getDrawableUriAsString(context, modal.interstitialImageUrl)!!
+                context.getDrawableUriAsString(modal.interstitialImageUrl)!!
             } else modal.interstitialImageUrl
 
-            Picasso.get().load(imageUrlToLoad).into(object : com.squareup.picasso.Target {
-                override fun onBitmapLoaded(resource: Bitmap, from: Picasso.LoadedFrom) {
-                    bitmap = resource
+
+            when (val result = getImageFromNetwork(imageUrlToLoad)) {
+                is SuccessResult -> {
+                    bitmap = (result.drawable as BitmapDrawable).bitmap
                     mAdListener?.onAdLoaded()
                     isAdLoaded = true
                 }
-
-                override fun onBitmapFailed(exception: Exception, errorDrawable: Drawable?) {
-                    mAdListener?.onAdLoadFailed(exception)
+                is ErrorResult -> {
+                    mAdListener?.onAdLoadFailed(Exception(result.throwable))
                     isAdLoaded = false
                 }
-
-                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-            })
+            }
             packageName = modal.packageOrUrl
         }
     }
@@ -201,6 +194,6 @@ class HouseAdsInterstitial(private val context: Context, private val jsonUrl: St
         private var isAdLoaded = false
         private var bitmap: Bitmap? = null
         private var packageName: String? = null
-        private val TAG = HouseAdsInterstitial::class.java.simpleName.toString()
+        private val TAG = HouseAdsInterstitial::class.java.simpleName
     }
 }

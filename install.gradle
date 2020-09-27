@@ -13,12 +13,12 @@ install {
         pom {
             project {
                 packaging 'aar'
-                groupId 'com.lazygeniouz' // CREATE A GROUP ID FOR YOUR LIBRARY
-                artifactId 'houseAds' // THE NAME OF YOUR MODULE
+                groupId 'com.lazygeniouz'
+                artifactId 'houseAds'
 
-                name 'houseAds' // YOUR LIBRARY NAME
-                description 'A simple Android library to cross promote your apps, websites!' // YOUR LIBRARY DESCRIPTION
-                url 'https://github.com/ItzNotABug/HouseAds' // YOUR SITE
+                name 'houseAds'
+                description 'A simple Android library to cross promote your apps, websites!'
+                url 'https://github.com/ItzNotABug/HouseAds'
 
                 licenses {
                     license {
@@ -28,15 +28,15 @@ install {
                 }
                 developers {
                     developer {
-                        id 'itznotabug' //YOUR ID
-                        name 'DarShan Pandya' //YOUR NAME
-                        email 'itznotabug@gmail.com' //YOUR EMAIL
+                        id 'itznotabug'
+                        name 'DarShan Pandya'
+                        email 'itznotabug@gmail.com'
                     }
                 }
                 scm {
-                    connection 'https://github.com/ItzNotABug/HouseAds.git' // YOUR GIT REPO
-                    developerConnection 'https://github.com/ItzNotABug/HouseAds.git' // YOUR GIT REPO
-                    url 'https://github.com/ItzNotABug/HouseAds' // YOUR SITE
+                    connection 'https://github.com/ItzNotABug/HouseAds.git'
+                    developerConnection 'https://github.com/ItzNotABug/HouseAds.git'
+                    url 'https://github.com/ItzNotABug/HouseAds'
                 }
             }
         }
