@@ -1,6 +1,7 @@
 # HouseAds
 A simple Android library (currently in early stage) to cross promote your apps, sites!
 <br/>Currently includes a Dialog, Interstitial & a Customizable Native Ad fetched from a json stored on a site/server.
+<br/><br/>The library internals in the `dev` branch have been refactored to use `Coroutines` for background tasks & `Coil` for image processing.
 
 ![Screenshot](https://github.com/ItzNotABug/HouseAds/blob/master/screenshots/screenshot.png)
 
