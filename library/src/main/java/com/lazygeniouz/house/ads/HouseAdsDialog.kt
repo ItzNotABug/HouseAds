@@ -21,10 +21,7 @@ import androidx.palette.graphics.Palette
 import coil.request.ErrorResult
 import coil.request.SuccessResult
 import com.lazygeniouz.house.ads.base.BaseAd
-import com.lazygeniouz.house.ads.extension.getDrawableUriAsString
-import com.lazygeniouz.house.ads.extension.hasDrawableSign
-import com.lazygeniouz.house.ads.extension.hasHttpSign
-import com.lazygeniouz.house.ads.extension.isAppInstalled
+import com.lazygeniouz.house.ads.extension.*
 import com.lazygeniouz.house.ads.helper.JsonHelper
 import com.lazygeniouz.house.ads.listener.AdListener
 import com.lazygeniouz.house.ads.modal.DialogModal
@@ -133,19 +130,8 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
                     jsonArray.remove(childObject)
                 else {
                     //We Only Add Dialog Ones!
-                    if (jsonObject.optString("app_adType") == "dialog") {
-                        val dialogModal = DialogModal()
-                        dialogModal.appTitle = jsonObject.optString("app_title")
-                        dialogModal.appDesc = jsonObject.optString("app_desc")
-                        dialogModal.iconUrl = jsonObject.optString("app_icon")
-                        dialogModal.largeImageUrl = jsonObject.optString("app_header_image")
-                        dialogModal.callToActionButtonText = jsonObject.optString("app_cta_text")
-                        dialogModal.packageOrUrl = jsonObject.optString("app_uri")
-                        dialogModal.setRating(jsonObject.optString("app_rating"))
-                        dialogModal.price = jsonObject.optString("app_price")
-
-                        dialogModalList.add(dialogModal)
-                    }
+                    if (jsonObject.optString("app_adType") == "dialog")
+                        dialogModalList.add(getDialogModal(jsonObject))
                 }
             }
 

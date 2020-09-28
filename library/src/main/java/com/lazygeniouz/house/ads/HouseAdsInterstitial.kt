@@ -31,6 +31,7 @@ import coil.request.ErrorResult
 import coil.request.SuccessResult
 import com.lazygeniouz.house.ads.base.BaseAd
 import com.lazygeniouz.house.ads.extension.getDrawableUriAsString
+import com.lazygeniouz.house.ads.extension.getInterstitialModal
 import com.lazygeniouz.house.ads.extension.hasDrawableSign
 import com.lazygeniouz.house.ads.extension.hasHttpSign
 import com.lazygeniouz.house.ads.helper.JsonHelper
@@ -112,16 +113,10 @@ class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : Base
         try {
             val rootObject = JSONObject(jsonResponse)
             val array = rootObject.optJSONArray("apps")!!
-
             for (childObject in 0 until array.length()) {
                 val jsonObject = array.getJSONObject(childObject)
-
-                if (jsonObject.optString("app_adType") == "interstitial") {
-                    val interstitialModal = InterstitialModal()
-                    interstitialModal.interstitialImageUrl = jsonObject.optString("app_interstitial_url")
-                    interstitialModal.packageOrUrl = jsonObject.optString("app_uri")
-                    modalArrayList.add(interstitialModal)
-                }
+                if (jsonObject.optString("app_adType") == "interstitial")
+                    modalArrayList.add(getInterstitialModal(jsonObject))
             }
         } catch (jsonException: JSONException) {
             jsonException.printStackTrace()

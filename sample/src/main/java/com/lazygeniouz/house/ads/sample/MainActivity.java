@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -47,44 +46,52 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         billingProcessor = new BillingProcessor(MainActivity.this, null, new BillingProcessor.IBillingHandler() {
-                    @Override
-                    public void onProductPurchased(@NonNull String productId, TransactionDetails details) {
-                        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                                .setView(View.inflate(MainActivity.this, R.layout.verify_purchase, null))
-                                .create();
-                        dialog.show();
+            @Override
+            public void onProductPurchased(@NonNull String productId, TransactionDetails details) {
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setView(View.inflate(MainActivity.this, R.layout.verify_purchase, null))
+                        .create();
+                dialog.show();
 
-                        new CheckoutVerifier("https://www.lazygeniouz.com/iab-verify/houseAds/verify.php",
-                                details.purchaseInfo.responseData,
-                                details.purchaseInfo.signature,
-                                new VerifyingListener() {
-                                    @Override
-                                    public void onVerificationStarted() {
-                                        dialog.show();
-                                    }
+                new CheckoutVerifier("https://www.lazygeniouz.com/iab-verify/houseAds/verify.php",
+                        details.purchaseInfo.responseData,
+                        details.purchaseInfo.signature,
+                        new VerifyingListener() {
+                            @Override
+                            public void onVerificationStarted() {
+                                dialog.show();
+                            }
 
-                                    @Override
-                                    public void onVerificationCompleted(Boolean isVerified) {
-                                        dialog.dismiss();
-                                        if (isVerified) showSnackbar("Thank You! :)");
-                                        else showSnackbar("Error! :(");
+                            @Override
+                            public void onVerificationCompleted(Boolean isVerified) {
+                                dialog.dismiss();
+                                if (isVerified) showSnackbar("Thank You! :)");
+                                else showSnackbar("Error! :(");
 
-                                        //Consuming the Product so that
-                                        // the User can Donate as many times as he/she likes! ;)
-                                        billingProcessor.consumePurchase(productId);
-                                    }
+                                //Consuming the Product so that
+                                // the User can Donate as many times as he/she likes! ;)
+                                billingProcessor.consumePurchase(productId);
+                            }
 
-                                    @Override
-                                    public void onExceptionCaught(@NonNull Exception e) {
-                                        Log.d("HouseAds", e.getMessage());
-                                    }
-                                }).start();
-                    }
+                            @Override
+                            public void onExceptionCaught(@NonNull Exception e) {
+                                Log.d("HouseAds", e.getMessage());
+                            }
+                        }).start();
+            }
 
-                    @Override public void onPurchaseHistoryRestored() {}
-                    @Override public void onBillingError(int errorCode, Throwable error) {}
-                    @Override public void onBillingInitialized() {}
-                });
+            @Override
+            public void onPurchaseHistoryRestored() {
+            }
+
+            @Override
+            public void onBillingError(int errorCode, Throwable error) {
+            }
+
+            @Override
+            public void onBillingInitialized() {
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -129,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         TextView snackText = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
         snackText.setTypeface(Typeface.SERIF, Typeface.BOLD);
         snackText.setGravity(Gravity.CENTER);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) snackText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        snackText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         snackbar.show();
     }
 
@@ -147,9 +154,10 @@ public class MainActivity extends AppCompatActivity {
         tellFragments();
     }
 
-    private void tellFragments(){
+    private void tellFragments() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for(Fragment fragment : fragments) if(fragment instanceof BaseFragment) ((BaseFragment) fragment).onBackPressed(this);
+        for (Fragment fragment : fragments)
+            if (fragment instanceof BaseFragment) ((BaseFragment) fragment).onBackPressed(this);
     }
 
     @Override
