@@ -1,7 +1,6 @@
 /*
- * Created by Darshan Pandya.
- * @itznotabug
- * Copyright (c) 2018.
+ * Created by Darshan Pandya. (@itznotabug)
+ * Copyright (c) 2018-2020.
  */
 
 package com.lazygeniouz.house.ads.modal
@@ -11,6 +10,14 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 
+// TODO: Move to a data class
+
+/**
+ * Much like the UnifiedNativeAdView,
+ *
+ * Create your custom ad-layout and
+ * pass the relevant ui views / widget to this class
+ */
 class HouseAdsNativeView {
     var titleView: TextView? = null
     var descriptionView: TextView? = null

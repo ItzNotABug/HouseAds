@@ -1,12 +1,10 @@
 /*
- * Created by Darshan Pandya.
- * @itznotabug
- * Copyright (c) 2018.
+ * Created by Darshan Pandya. (@itznotabug)
+ * Copyright (c) 2018-2020.
  */
 
 package com.lazygeniouz.house.ads.modal
 
-class InterstitialModal {
-    lateinit var interstitialImageUrl: String
-    lateinit var packageOrUrl: String
-}
+internal data class InterstitialModal(
+        val interstitialImageUrl: String,
+        val packageOrUrl: String)

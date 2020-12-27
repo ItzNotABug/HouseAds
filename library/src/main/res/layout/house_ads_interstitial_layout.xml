@@ -16,6 +16,7 @@
         android:contentDescription="@string/interstitial_image" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/houseAds_interstitial_button_close_card"
         android:layout_width="25dp"
         android:layout_height="25dp"
         app:cardCornerRadius="12.5dp"

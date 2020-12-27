@@ -1,7 +1,6 @@
 /*
- * Created by Darshan Pandya.
- * @itznotabug
- * Copyright (c) 2018-2019.
+ * Created by Darshan Pandya. (@itznotabug)
+ * Copyright (c) 2018-2020.
  */
 
 package com.lazygeniouz.house.ads.helper
@@ -19,9 +18,10 @@ import java.io.InputStreamReader
 
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-class JsonHelper {
+object JsonHelper {
 
-    suspend fun getJsonObject(url: String): String = withContext(Dispatchers.IO) {
+    internal suspend fun getJsonObject(url: String)
+            : String = withContext(Dispatchers.IO) {
         return@withContext parseJsonObject(url)
     }
 

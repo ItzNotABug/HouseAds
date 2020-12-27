@@ -1,8 +1,9 @@
 /*
- * Created by Darshan Pandya.
- * @itznotabug
- * Copyright (c) 2018.
+ * Created by Darshan Pandya. (@itznotabug)
+ * Copyright (c) 2018-2020.
  */
+
+@file:Suppress("unused")
 
 package com.lazygeniouz.house.ads
 
@@ -27,13 +28,11 @@ import androidx.annotation.AnimRes
 import androidx.annotation.NonNull
 import androidx.annotation.RawRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import coil.request.ErrorResult
 import coil.request.SuccessResult
 import com.lazygeniouz.house.ads.base.BaseAd
-import com.lazygeniouz.house.ads.extension.getDrawableUriAsString
-import com.lazygeniouz.house.ads.extension.getInterstitialModal
-import com.lazygeniouz.house.ads.extension.hasDrawableSign
-import com.lazygeniouz.house.ads.extension.hasHttpSign
+import com.lazygeniouz.house.ads.extension.*
 import com.lazygeniouz.house.ads.helper.JsonHelper
 import com.lazygeniouz.house.ads.listener.AdListener
 import com.lazygeniouz.house.ads.modal.InterstitialModal
@@ -46,28 +45,46 @@ class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : Base
     private var isUsingRawRes = false
     private var jsonRawResponse = ""
     private var jsonLocalRawResponse = ""
-    private val jsonHelper: JsonHelper = JsonHelper()
 
+    /**
+     * Secondary constructor if you want to use a custom Json File from Raw folder
+     */
     constructor(context: Context, @RawRes rawFile: Int) : this(context, "") {
         isUsingRawRes = true
-        jsonLocalRawResponse = jsonHelper.getJsonFromRaw(context, rawFile)
+        jsonLocalRawResponse = JsonHelper.getJsonFromRaw(context, rawFile)
     }
 
+    /**
+     * Set an [AdListener] to listen to Ad events
+     *
+     * Example: [AdListener.onAdLoaded], [AdListener.onAdFailedToLoad], etc
+     */
     fun setAdListener(listener: AdListener): HouseAdsInterstitial {
         adListener = listener
         return this
     }
 
+    /**
+     * Set whether to use Palette API to color UI elements
+     */
     fun usePalette(value: Boolean): HouseAdsInterstitial {
         usePalette = value
         return this
     }
 
+    /**
+     * Set whether to show / hide the system Navigation Bar
+     * when the Interstitial Ad is displayed
+     */
     fun hideNavigationBar(value: Boolean): HouseAdsInterstitial {
         hideNavigation = value
         return this
     }
 
+    /**
+     * Set the background & the icon color of the
+     * Close Button **(X)** on the Interstitial Ad
+     */
     fun setCloseButtonColor(
             backgroundColor: Int = Color.WHITE,
             iconTint: Int = Color.BLACK): HouseAdsInterstitial {
@@ -77,32 +94,68 @@ class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : Base
     }
 
     /**
+     * Set the Close Button's **(X)** location
+     *
+     * Can either be [LOCATION.LOCATION_LEFT]
+     *
+     * or [LOCATION.LOCATION_RIGHT]
+     */
+    fun setCloseButtonLocation(location: LOCATION): HouseAdsInterstitial {
+        closeButtonLocation = location
+        return this
+    }
+
+    /**
      * Google AdMob has recently applied this
      * behavior to their Interstitial Ads.
      *
-     * @param exit = If true, Interstitial Ad can be closed by a back press.
-     * Else the user will have to click on the (X) button
+     * If **true**, Interstitial Ad can be closed by a BackPress.
+     * Else the user will have to click on the Close Button **(X)**
      */
     fun exitOnBackPress(exit: Boolean): HouseAdsInterstitial {
         exitOnBackPress = exit
         return this
     }
 
+    /**
+     * Alright, lets load the Ads
+     */
     fun loadAds() {
+        isAdLoaded = false
         if (!isUsingRawRes) {
             require(jsonUrl.trim().isNotEmpty()) { context.getString(R.string.error_url_blank) }
             if (jsonRawResponse.isEmpty()) {
                 launch {
-                    val result = jsonHelper.getJsonObject(jsonUrl)
+                    val result = JsonHelper.getJsonObject(jsonUrl)
                     if (result.trim().isNotEmpty()) {
                         jsonRawResponse = result
                         configureAds(result)
-                    } else adListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
+                    } else adListener?.onAdFailedToLoad(Exception(context.getString(R.string.error_null_response)))
                 }
             } else configureAds(jsonRawResponse)
         } else configureAds(jsonLocalRawResponse)
     }
 
+    /**
+     * Show the loaded Ad
+     */
+    fun show() {
+        context.startActivity(Intent(context, InterstitialActivity::class.java))
+        if (context is AppCompatActivity) context.overridePendingTransition(0, 0)
+    }
+
+    /**
+     * Show the loaded Ad with activity transitions
+     */
+    fun show(@NonNull @AnimRes enterAnim: Int, @NonNull @AnimRes exitAnim: Int) {
+        context.startActivity(Intent(context, InterstitialActivity::class.java))
+        if (context is Activity) context.overridePendingTransition(enterAnim, exitAnim)
+        else Log.d(TAG, "show(enterAnim, exitAnim) cannot be used because the Context is not an instance of Activity")
+    }
+
+    /**
+     * Check if the Interstitial Ad is loaded
+     */
     fun isAdLoaded(): Boolean {
         return isAdLoaded
     }
@@ -139,22 +192,19 @@ class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : Base
             }
 
             val imageUrlToLoad: String = if (modal.interstitialImageUrl.hasDrawableSign) {
-                context.getDrawableUriAsString(modal.interstitialImageUrl)!!
+                context.getDrawableUriAsString(modal.interstitialImageUrl)
             } else modal.interstitialImageUrl
 
             launch {
                 when (val result = getImageFromNetwork(imageUrlToLoad)) {
                     is SuccessResult -> {
                         bitmap = (result.drawable as BitmapDrawable).bitmap
-                        if (usePalette && bitmap != null) {
-                            //val palette = Palette.from(bitmap!!).generate()
-                            paletteColor = getDominantColor(bitmap!!)
-                        }
+                        if (usePalette && bitmap != null) paletteColor = bitmap!!.getDominantColorForInterstitial()
                         adListener?.onAdLoaded()
                         isAdLoaded = true
                     }
                     is ErrorResult -> {
-                        adListener?.onAdLoadFailed(Exception(result.throwable))
+                        adListener?.onAdFailedToLoad(Exception(result.throwable))
                         isAdLoaded = false
                     }
                 }
@@ -163,41 +213,25 @@ class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : Base
         }
     }
 
-    private fun getDominantColor(bitmap: Bitmap): Int {
-        val newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true)
-        val color = newBitmap.getPixel(0, 0)
-        newBitmap.recycle()
-        return color
-    }
-
-    fun show() {
-        context.startActivity(Intent(context, InterstitialActivity::class.java))
-        if (context is AppCompatActivity) context.overridePendingTransition(0, 0)
-    }
-
-
-    @Suppress("unused")
-    fun show(@NonNull @AnimRes enterAnim: Int, @NonNull @AnimRes exitAnim: Int) {
-        context.startActivity(Intent(context, InterstitialActivity::class.java))
-        if (context is AppCompatActivity) context.overridePendingTransition(enterAnim, exitAnim)
-    }
-
     class InterstitialActivity : Activity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             fullscreen()
             super.onCreate(savedInstanceState)
+
             adListener?.onAdShown()
             setContentView(R.layout.house_ads_interstitial_layout)
             val parent = findViewById<RelativeLayout>(R.id.houseAds_interstitial_parent)
             val imageView = findViewById<ImageView>(R.id.houseAds_interstitial_image)
+            val cardView = findViewById<CardView>(R.id.houseAds_interstitial_button_close_card)
             val button = findViewById<ImageButton>(R.id.houseAds_interstitial_button_close)
 
             parent.setBackgroundColor(paletteColor)
-
-            val drawable = GradientDrawable().apply {
-                shape = GradientDrawable.OVAL
-                cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-                setColor(closeButtonBackgroundColor)
+            cardView.apply {
+                if (closeButtonLocation == LOCATION.LOCATION_RIGHT)
+                    layoutParams = (layoutParams as RelativeLayout.LayoutParams)
+                            .apply {
+                                addRule(RelativeLayout.ALIGN_PARENT_END)
+                            }
             }
 
             imageView.apply {
@@ -228,7 +262,11 @@ class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : Base
             }
 
             button.apply {
-                background = drawable
+                background = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+                    setColor(closeButtonBackgroundColor)
+                }
                 setColorFilter(closeIconColor, PorterDuff.Mode.SRC_ATOP)
                 setOnClickListener {
                     finish()
@@ -256,6 +294,7 @@ class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : Base
         }
     }
 
+    // to be used inside the nested activity
     private companion object {
         private var lastLoaded = 0
         private var adListener: AdListener? = null
@@ -264,10 +303,16 @@ class HouseAdsInterstitial(context: Context, private val jsonUrl: String) : Base
         private var exitOnBackPress: Boolean = false
         private var paletteColor: Int = Color.BLACK
         private var closeButtonBackgroundColor = Color.WHITE
+        private var closeButtonLocation = LOCATION.LOCATION_LEFT
         private var closeIconColor = Color.BLACK
         private var usePalette: Boolean = false
         private var hideNavigation: Boolean = true
         private var packageName: String? = null
         private val TAG = HouseAdsInterstitial::class.java.simpleName
+    }
+
+    enum class LOCATION {
+        LOCATION_LEFT,
+        LOCATION_RIGHT
     }
 }

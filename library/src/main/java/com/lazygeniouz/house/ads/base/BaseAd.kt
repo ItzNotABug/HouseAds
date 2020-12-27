@@ -1,3 +1,8 @@
+/*
+ * Created by Darshan Pandya. (@itznotabug)
+ * Copyright (c) 2018-2020.
+ */
+
 package com.lazygeniouz.house.ads.base
 
 import android.content.Context
@@ -10,29 +15,50 @@ import androidx.lifecycle.OnLifecycleEvent
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.ImageResult
+import com.lazygeniouz.house.ads.helper.CoroutineScopeHandler
 
+/**
+ * Base class to handle CoroutineScopes for other sub-classes
+ * & some other misc things.
+ *
+ * Should not be used outside the library scope.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 open class BaseAd(val context: Context) {
 
-    private var scopeHandler = CoroutineScopeHandler()
+    private val scopeHandler by lazy { CoroutineScopeHandler() }
 
     init {
-        if (context is FragmentActivity) context.lifecycle.addObserver(HostActivityObserver())
+        if (context is FragmentActivity)
+            context.lifecycle
+                    .addObserver(object : LifecycleObserver {
+                        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+                        fun destroy() {
+                            dispose()
+                        }
+                    })
         else Log.e(TAG, "The supplied Context is not a FragmentActivity instance." +
-                "\nPlease make sure to call `dispose()` method on your Ad instance.")
+                "\nPlease make sure to call dispose() method on your Ad instance.")
     }
 
-    fun launch(task: suspend (() -> Unit)) {
+    /**
+     * A coroutine launcher method,
+     * implemented by the subclasses' **configureAds()** method
+     */
+    internal fun launch(task: suspend (() -> Unit)) {
         scopeHandler.launch(task)
     }
 
-    // If the context is not a FragmentActivity instance,
-    // make sure to call dispose manually
-    fun dispose() {
-        scopeHandler.dispose()
-    }
+    /**
+     * This method properly disposes / cancels all the coroutines
+     * created by the internal [CoroutineScopeHandler].
+     *
+     * If the context is not a FragmentActivity instance,
+     * make sure to call **[dispose]** manually
+     */
+    fun dispose() = scopeHandler.dispose()
 
-    suspend fun getImageFromNetwork(url: String): ImageResult {
+    internal suspend fun getImageFromNetwork(url: String): ImageResult {
         return getImageLoader(context)
                 .execute(ImageRequest.Builder(context)
                         .data(url)
@@ -44,15 +70,7 @@ open class BaseAd(val context: Context) {
             .crossfade(true)
             .build()
 
-
-    private inner class HostActivityObserver : LifecycleObserver {
-        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        fun destroy() {
-            dispose()
-        }
-    }
-
     companion object {
-        private val TAG = "HouseAds" + BaseAd::class.java.simpleName
+        private const val TAG = "HouseAds"
     }
 }

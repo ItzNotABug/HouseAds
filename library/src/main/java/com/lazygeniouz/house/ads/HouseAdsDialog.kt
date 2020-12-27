@@ -1,3 +1,10 @@
+/*
+ * Created by Darshan Pandya. (@itznotabug)
+ * Copyright (c) 2018-2020.
+ */
+
+@file:Suppress("unused")
+
 package com.lazygeniouz.house.ads
 
 import android.content.ActivityNotFoundException
@@ -17,7 +24,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.palette.graphics.Palette
 import coil.request.ErrorResult
 import coil.request.SuccessResult
 import com.lazygeniouz.house.ads.base.BaseAd
@@ -28,6 +34,12 @@ import com.lazygeniouz.house.ads.modal.DialogModal
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
+
+/**
+ * Show a custom Dialog Ad.
+ *
+ * **See:**  [HouseAdsDialog](https://github.com/ItzNotABug/HouseAds#houseadsdialog)
+ */
 
 class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(context) {
 
@@ -44,74 +56,107 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
     private var isAdLoaded = false
     private var isUsingRawRes = false
 
-    private val jsonHelper: JsonHelper = JsonHelper()
     private var mAdListener: AdListener? = null
     private var dialog: AlertDialog? = null
 
+    /**
+     * Secondary constructor if you want to use a custom Json File from Raw folder
+     */
     constructor(context: Context, @RawRes rawFile: Int) : this(context, "") {
         isUsingRawRes = true
-        jsonLocalRawResponse = jsonHelper.getJsonFromRaw(context, rawFile)
+        jsonLocalRawResponse = JsonHelper.getJsonFromRaw(context, rawFile)
     }
 
+    /**
+     * Set whether to show Header Image if available
+     */
     fun showHeaderIfAvailable(showHeader: Boolean): HouseAdsDialog {
         this.showHeader = showHeader
         return this
     }
 
+    /**
+     * Set the Dialog Ad's corner radius
+     */
     fun setCardCorners(corners: Int): HouseAdsDialog {
         this.cardCorner = corners
         return this
     }
 
+    /**
+     * Set the Call to Action Button's color
+     */
     fun setCtaCorner(corner: Int): HouseAdsDialog {
         this.callToActionButtonCorner = corner
         return this
     }
 
+    /**
+     * Set Call to Action Button's Text in All Caps
+     */
     fun ctaAllCaps(isAllCaps: Boolean): HouseAdsDialog {
         this.isAllCaps = isAllCaps
         return this
     }
 
+    /**
+     * Set an [AdListener] to listen to Ad events
+     *
+     * Example: [AdListener.onAdLoaded], [AdListener.onAdFailedToLoad], etc
+     */
     fun setAdListener(listener: AdListener): HouseAdsDialog {
         this.mAdListener = listener
         return this
     }
 
-    @Suppress("unused")
-    fun isAdLoaded(): Boolean {
-        return isAdLoaded
-    }
-
+    /**
+     * Set whether to show the Dialog Ad if,
+     *
+     * the Current Ad is of App Type (package name) and
+     * the App is already installed on the user's device
+     */
     fun hideIfAppInstalled(hide: Boolean): HouseAdsDialog {
         this.hideIfAppInstalled = hide
         return this
     }
 
+    /**
+     * Set whether to use Palette API to color UI elements
+     */
     fun usePalette(usePalette: Boolean): HouseAdsDialog {
         this.usePalette = usePalette
         return this
     }
 
+    /**
+     * Alright, lets load the Ads
+     */
     fun loadAds() {
         isAdLoaded = false
         if (!isUsingRawRes) {
             require(jsonUrl.trim().isNotEmpty()) { context.getString(R.string.error_url_blank) }
             if (jsonRawResponse.isEmpty()) {
                 launch {
-                    val result = jsonHelper.getJsonObject(jsonUrl)
+                    val result = JsonHelper.getJsonObject(jsonUrl)
                     if (result.trim().isNotEmpty()) {
                         jsonRawResponse = result
                         configureAds(result)
-                    } else mAdListener?.onAdLoadFailed(Exception(context.getString(R.string.error_null_response)))
+                    } else mAdListener?.onAdFailedToLoad(Exception(context.getString(R.string.error_null_response)))
                 }
             } else configureAds(jsonRawResponse)
         } else configureAds(jsonLocalRawResponse)
     }
 
-    fun showAd() {
-        if (dialog == null) Log.d(TAG, "dialog is null")
-        dialog?.show()
+    /**
+     * Show the loaded Ad
+     */
+    fun showAd() = dialog?.show()
+
+    /**
+     * Check if the Ad is loaded
+     */
+    fun isAdLoaded(): Boolean {
+        return isAdLoaded
     }
 
     private fun configureAds(response: String) {
@@ -129,12 +174,10 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
                         context.isAppInstalled(jsonObject.optString("app_uri")))
                     jsonArray.remove(childObject)
                 else {
-                    //We Only Add Dialog Ones!
                     if (jsonObject.optString("app_adType") == "dialog")
                         dialogModalList.add(getDialogModal(jsonObject))
                 }
             }
-
         } catch (e: JSONException) {
             e.printStackTrace()
         }
@@ -194,7 +237,7 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
             val price = view.findViewById<TextView>(R.id.houseAds_price)
 
             launch {
-                val iconUrlToLoad: String = if (iconUrl.hasDrawableSign) context.getDrawableUriAsString(iconUrl)!!
+                val iconUrlToLoad: String = if (iconUrl.hasDrawableSign) context.getDrawableUriAsString(iconUrl)
                 else iconUrl
 
                 when (val result = getImageFromNetwork(iconUrlToLoad)) {
@@ -204,10 +247,7 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
 
                         if (icon.visibility == View.GONE) icon.visibility = View.VISIBLE
                         var dominantColor = ContextCompat.getColor(context, R.color.colorAccent)
-                        if (usePalette) {
-                            val palette = Palette.from((icon.drawable as BitmapDrawable).bitmap).generate()
-                            dominantColor = palette.getDominantColor(ContextCompat.getColor(context, R.color.colorAccent))
-                        }
+                        if (usePalette) dominantColor = (icon.drawable as BitmapDrawable).bitmap.getDominantColor()
 
                         val drawable = callToActionButton.background as GradientDrawable
                         drawable.setColor(dominantColor)
@@ -220,12 +260,12 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
                     }
                     is ErrorResult -> {
                         isAdLoaded = false
-                        mAdListener?.onAdLoadFailed(Exception("The Icon Uri: $iconUrlToLoad could not be fetched. More Info: ${result.throwable}"))
+                        mAdListener?.onAdFailedToLoad(Exception("The Icon Uri: $iconUrlToLoad could not be fetched. More Info: ${result.throwable}"))
                         icon.visibility = View.GONE
                     }
                 }
                 if (largeImageUrl.trim().isNotEmpty() && showHeader) {
-                    val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) context.getDrawableUriAsString(largeImageUrl)!!
+                    val largeImageUrlToLoad: String = if (largeImageUrl.hasDrawableSign) context.getDrawableUriAsString(largeImageUrl)
                     else largeImageUrl
 
                     when (val result = getImageFromNetwork(largeImageUrlToLoad)) {
@@ -249,10 +289,11 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
 
                 builder.setView(view)
                 dialog = builder.create()
-                dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-                dialog!!.setOnShowListener { mAdListener?.onAdShown() }
-                dialog!!.setOnCancelListener { mAdListener?.onAdClosed() }
-                dialog!!.setOnDismissListener { mAdListener?.onAdClosed() }
+                        .apply {
+                            window?.setBackgroundDrawableResource(android.R.color.transparent)
+                            setOnShowListener { mAdListener?.onAdShown() }
+                            setOnDismissListener { mAdListener?.onAdClosed() }
+                        }
 
                 // Calling this here because previous implementation was'nt correct
                 // and the first call to show() would never show the dialog.
@@ -269,10 +310,9 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
                             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageOrUrl")))
                             mAdListener?.onApplicationLeft()
                         } catch (e: ActivityNotFoundException) {
-                            mAdListener?.onApplicationLeft()
                             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=$packageOrUrl")))
+                            mAdListener?.onApplicationLeft()
                         }
-
                     }
                 }
             }
@@ -280,7 +320,7 @@ class HouseAdsDialog(context: Context, private val jsonUrl: String) : BaseAd(con
     }
 
     companion object {
-        private val TAG = HouseAdsInterstitial::class.java.simpleName
+        private val TAG = HouseAdsDialog::class.java.simpleName
     }
 }
 

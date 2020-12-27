@@ -1,14 +1,13 @@
 /*
- * Created by Darshan Pandya.
- * @itznotabug
- * Copyright (c) 2018.
+ * Created by Darshan Pandya. (@itznotabug)
+ * Copyright (c) 2018-2020.
  */
 
 package com.lazygeniouz.house.ads.modal
 
-import java.lang.Float.parseFloat
+// TODO: Move to a data class
 
-class DialogModal {
+internal class DialogModal {
     var iconUrl: String? = null
     var appTitle: String? = null
     var appDesc: String? = null
@@ -16,15 +15,11 @@ class DialogModal {
     var packageOrUrl: String? = null
     var callToActionButtonText: String? = null
     var price: String? = null
-    private var rating: String? = null
+    var rating: String? = null
 
-    fun setRating(ratings: String) {
-        this.rating = ratings
-    }
-
-    fun getRating(): Float {
+    internal fun getRating(): Float {
         var ratings = 0f
-        if (rating != null && rating!!.isNotEmpty()) ratings = parseFloat(rating!!)
+        if (rating != null && rating!!.isNotEmpty()) ratings = rating!!.toFloat()
         return ratings
     }
 }
