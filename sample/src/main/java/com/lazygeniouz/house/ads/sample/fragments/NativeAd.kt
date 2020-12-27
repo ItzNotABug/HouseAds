@@ -2,20 +2,18 @@ package com.lazygeniouz.house.ads.sample.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.google.android.material.button.MaterialButton
 import com.lazygeniouz.house.ads.HouseAdsNative
 import com.lazygeniouz.house.ads.listener.NativeAdListener
 import com.lazygeniouz.house.ads.sample.R
+import com.lazygeniouz.house.ads.sample.fragments.base.BaseFragment
 
 class NativeAd : BaseFragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.native_ad, container, false)
-    }
+
+    override fun getLayoutId(): Int = R.layout.native_ad
 
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
         val isShowLocalAssets = requireContext().getSharedPreferences("localAssetsNative", Context.MODE_PRIVATE).getBoolean("value", false)
@@ -27,6 +25,7 @@ class NativeAd : BaseFragment() {
             rootView.findViewById<View>(R.id.houseAds_header_image).visibility = View.GONE
             houseAdsNative = HouseAdsNative(requireContext(), "https://lz-houseads.firebaseapp.com/houseAds/ads.json")
         } else houseAdsNative = HouseAdsNative(requireContext(), R.raw.ad_assets)
+
         houseAdsNative.setNativeAdView(rootView.findViewById(R.id.card_view))
                 .usePalette(true)
                 .setNativeAdListener(object : NativeAdListener {
@@ -35,7 +34,7 @@ class NativeAd : BaseFragment() {
                         rootView.findViewById<View>(R.id.card_view).visibility = View.VISIBLE
                     }
 
-                    override fun onAdLoadFailed(exception: Exception) {
+                    override fun onAdFailedToLoad(exception: Exception) {
                         loading.text = String.format("%s%s", getString(R.string.ad_failed), exception.message)
                         loading.visibility = View.VISIBLE
                     }

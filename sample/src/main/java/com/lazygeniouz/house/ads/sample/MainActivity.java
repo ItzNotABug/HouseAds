@@ -29,13 +29,18 @@ import com.google.android.material.tabs.TabLayout;
 import com.lazygeniouz.checkoutverifier.CheckoutVerifier;
 import com.lazygeniouz.checkoutverifier.VerifyingListener;
 import com.lazygeniouz.house.ads.sample.adapter.ViewPagerAdapter;
-import com.lazygeniouz.house.ads.sample.fragments.BaseFragment;
 import com.lazygeniouz.house.ads.sample.fragments.DialogAd;
 import com.lazygeniouz.house.ads.sample.fragments.InterstitialAd;
 import com.lazygeniouz.house.ads.sample.fragments.NativeAd;
+import com.lazygeniouz.house.ads.sample.fragments.base.BaseFragment;
 
 import java.util.List;
 
+// TODO: Migrate this Activity to Kotlin
+
+/**
+ * Sample App's MainActivity to demonstrate HouseAds library usage
+ */
 public class MainActivity extends AppCompatActivity {
 
     private BillingProcessor billingProcessor;
@@ -148,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-
     @Override
     public void onBackPressed() {
         tellFragments();
@@ -180,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

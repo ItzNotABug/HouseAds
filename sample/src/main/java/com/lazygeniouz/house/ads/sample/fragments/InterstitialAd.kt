@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +14,7 @@ import com.google.android.material.button.MaterialButton
 import com.lazygeniouz.house.ads.HouseAdsInterstitial
 import com.lazygeniouz.house.ads.listener.AdListener
 import com.lazygeniouz.house.ads.sample.R
+import com.lazygeniouz.house.ads.sample.fragments.base.BaseFragment
 
 class InterstitialAd : BaseFragment(), AdListener {
     private lateinit var interstitial: HouseAdsInterstitial
@@ -27,10 +26,7 @@ class InterstitialAd : BaseFragment(), AdListener {
     private lateinit var usePalette: SwitchCompat
     private lateinit var hideNavigation: SwitchCompat
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.interstitial, container, false)
-    }
+    override fun getLayoutId(): Int = R.layout.interstitial
 
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
         val isShowLocalAssets = requireContext().getSharedPreferences("localAssetsInterstitial", Context.MODE_PRIVATE).getBoolean("value", false)
@@ -55,7 +51,7 @@ class InterstitialAd : BaseFragment(), AdListener {
                 usePalette(usePalette.isChecked)
                 hideNavigationBar(hideNavigation.isChecked)
                 exitOnBackPress(closeOnBackPress.isChecked)
-                setCloseButtonColor(Color.BLACK, Color.WHITE)
+                setCloseButtonLocation(HouseAdsInterstitial.LOCATION.LOCATION_RIGHT)
                 loadAds()
             }
             load.isEnabled = false
@@ -68,7 +64,7 @@ class InterstitialAd : BaseFragment(), AdListener {
         }
     }
 
-    override fun onAdLoadFailed(exception: Exception) {
+    override fun onAdFailedToLoad(exception: Exception) {
         interstitialStatus.visibility = View.VISIBLE
         interstitialStatus.text = String.format("%s%s", getString(R.string.ad_failed), exception.message)
         load.isEnabled = true

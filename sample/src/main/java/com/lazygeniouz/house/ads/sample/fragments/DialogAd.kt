@@ -3,9 +3,7 @@ package com.lazygeniouz.house.ads.sample.fragments
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
@@ -13,6 +11,7 @@ import com.google.android.material.button.MaterialButton
 import com.lazygeniouz.house.ads.HouseAdsDialog
 import com.lazygeniouz.house.ads.listener.AdListener
 import com.lazygeniouz.house.ads.sample.R
+import com.lazygeniouz.house.ads.sample.fragments.base.BaseFragment
 
 class DialogAd : BaseFragment(), AdListener {
     private lateinit var hideIfAppInstalled: SwitchCompat
@@ -24,10 +23,7 @@ class DialogAd : BaseFragment(), AdListener {
     private lateinit var dialog: HouseAdsDialog
     private lateinit var loading: TextView
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog, container, false)
-    }
+    override fun getLayoutId(): Int = R.layout.dialog
 
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
         val isShowLocalAssets = requireContext().getSharedPreferences("localAssets", Context.MODE_PRIVATE).getBoolean("value", false)
@@ -62,7 +58,7 @@ class DialogAd : BaseFragment(), AdListener {
         }
     }
 
-    override fun onAdLoadFailed(exception: Exception) {
+    override fun onAdFailedToLoad(exception: Exception) {
         loading.visibility = View.GONE
         Log.d("HouseAdsExample", "Error: ${exception.message}")
     }
